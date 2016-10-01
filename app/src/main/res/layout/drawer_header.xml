@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="103dp"
+    android:background="@color/colorPrimary"
+    android:orientation="horizontal">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:minHeight="250dp"
+        android:minWidth="100dp"
+        android:id="@+id/linearLayout5"
+        android:layout_weight="2.25">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/thumbnail"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_account_circle_white_48dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="05dp" />
+
+        <!--android:layout_weight="1.5"-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:minHeight="250dp"
+        android:minWidth="100dp"
+        android:id="@+id/linearLayout7"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1">
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtusername"
+            android:text="@string/Username"
+            android:textSize="15sp"
+            android:textColor="#ffffff"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="110dp"
+        android:id="@+id/txtmobile"
+        android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:text="@string/Mobileno."
+            android:textColor="#ffffff"
+            android:layout_marginBottom="40dp" />
+
+        <TextView
+
+            android:layout_width="110dp"
+            android:id="@+id/txt"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:layout_weight="0.45" />
+    </LinearLayout>
+
+</LinearLayout>

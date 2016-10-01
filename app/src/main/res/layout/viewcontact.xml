@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:id="@+id/appbar"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:fitsSystemWindows="true"
+                android:background="@drawable/square_image"
+                android:id="@+id/viewImage"
+                app:layout_collapseMode="parallax" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                app:layout_collapseMode="pin" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:id="@+id/linearLayout6"
+                android:gravity="left"
+                android:background="@android:color/white">
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtname"
+                    android:hint="@string/Name"
+                    android:textColor="#141212"
+                    android:textColorHint="#534e4e"
+                    android:textAlignment="center"
+                    android:minHeight="30dp"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="40dp" />
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtusername"
+                    android:hint="@string/Username"
+                    android:textColor="#141212"
+                    android:textColorHint="#534e4e"
+                    android:textAlignment="center"
+                    android:minHeight="30dp"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="left" />
+
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/edtmobileno"
+                    android:textColorHint="#575353"
+                    android:hint="@string/Mobileno."
+                    android:textAlignment="center"
+                    android:maxLength="10"
+                    android:singleLine="true"
+                    android:inputType="phone"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp" />
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtemail"
+                    android:hint="@string/Emailid"
+                    android:textColor="#141212"
+                    android:textColorHint="#534e4e"
+                    android:textAlignment="center"
+                    android:minHeight="30dp"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="left" />
+
+
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/edttelephoneno"
+                    android:textColorHint="#575353"
+                    android:hint="@string/Telepheno_no"
+                    android:textAlignment="center"
+                    android:maxLength="10"
+                    android:singleLine="true"
+                    android:inputType="phone"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp" />
+
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtjodtitle"
+                    android:hint="@string/Jod_title"
+                    android:textColor="#141212"
+                    android:textColorHint="#534e4e"
+                    android:textAlignment="center"
+                    android:minHeight="30dp"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp" />
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edthomeaddress"
+                    android:hint="@string/Home_Address"
+                    android:textColor="#141212"
+                    android:textColorHint="#534e4e"
+                    android:textAlignment="center"
+                    android:minHeight="30dp"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp" />
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtworkaddress"
+                    android:hint="@string/Work_address"
+                    android:textColor="#141212"
+                    android:textColorHint="#534e4e"
+                    android:textAlignment="center"
+                    android:minHeight="30dp"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="20dp" />
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

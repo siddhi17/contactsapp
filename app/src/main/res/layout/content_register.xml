@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".Activities.RegisterActivity"
+    tools:showIn="@layout/activity_main2"
+    android:background="@android:color/white">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="1"
+            android:minHeight="250dp"
+            android:minWidth="100dp"
+            android:id="@+id/linearLayout5"
+            android:layout_below="@+id/view2">
+
+            <ImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/thumbnail"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@drawable/ic_account_box_black_48dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="40dp"
+                android:layout_centerHorizontal="true" />
+
+            <EditText
+                android:layout_width="253dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/edtname"
+                android:hint="@string/name"
+                android:textColor="#141212"
+                android:textColorHint="#a8a8a8"
+                android:textAlignment="textStart"
+                android:layout_gravity="center"
+                android:minHeight="30dp"
+                android:inputType="text"
+                android:singleLine="true"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/thumbnail"
+                android:layout_marginTop="40dp" />
+            <EditText
+                android:layout_width="253dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/edtusername"
+                android:hint="@string/Username"
+                android:textColor="#141212"
+                android:textColorHint="#a8a8a8"
+                android:textAlignment="textStart"
+                android:layout_gravity="center"
+                android:minHeight="30dp"
+                android:inputType="text"
+                android:singleLine="true"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/edtname" />
+
+
+            <EditText
+                android:layout_width="253dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/edtmobileno"
+                android:layout_gravity="center"
+                android:textColorHint="#a8a8a8"
+                android:hint="@string/Mobileno."
+                android:textAlignment="textStart"
+                android:layout_weight="0.23"
+                android:minEms="10"
+                android:maxLength="10"
+                android:textColor="#141212"
+                android:singleLine="true"
+                android:inputType="phone"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentEnd="false"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/edtusername" />
+            <EditText
+                android:layout_width="253dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/edtemail"
+                android:hint="@string/Emailid"
+                android:textColor="#141212"
+                android:textColorHint="#a8a8a8"
+                android:textAlignment="textStart"
+                android:layout_gravity="center"
+                android:minHeight="30dp"
+                android:inputType="textEmailAddress"
+                android:singleLine="true"
+
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/edtmobileno" />
+            <EditText
+                android:layout_width="253dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/edtconpass"
+                android:hint="@string/ConfirmPassword"
+                android:textColor="#141212"
+                android:textColorHint="#a8a8a8"
+                android:textAlignment="textStart"
+                android:layout_gravity="center"
+                android:minHeight="30dp"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/edtemail" />
+            <EditText
+                android:layout_width="253dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/edtpass"
+                android:hint="@string/Password"
+                android:textColor="#141212"
+                android:textColorHint="#a8a8a8"
+                android:textAlignment="textStart"
+                android:layout_gravity="center"
+                android:minHeight="30dp"
+                android:singleLine="true"
+                android:inputType="textPassword"
+                android:layout_marginBottom="35dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/edtconpass" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signup"
+                android:id="@+id/btnregister"
+                android:layout_gravity="center"
+                android:background="#C2185B"
+                android:layout_weight="0.66"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:layout_alignParentBottom="false"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/edtpass"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp" />
+
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

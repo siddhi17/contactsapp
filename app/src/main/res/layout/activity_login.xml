@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorPrimary"
+    tools:context="com.example.siddhi.contactsapp.Activities.LoginActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_below="@+id/view">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout5"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center">
+
+        <EditText
+            android:layout_width="253dp"
+            android:layout_height="50dp"
+            android:id="@+id/edtusername"
+            android:hint="@string/Username"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            android:minHeight="30dp"
+            android:inputType="text"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:textStyle="normal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentStart="false"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/edtpass" />
+
+        <EditText
+            android:layout_width="253dp"
+            android:layout_height="50dp"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/edtpass"
+            android:layout_gravity="center"
+            android:textColorHint="#ffffff"
+            android:hint="@string/Password"
+            android:password="true"
+            android:maxLength="8"
+            android:singleLine="true"
+            android:textColor="#ffffff"
+            android:textColorHighlight="#ffffff"
+            android:layout_above="@+id/btnsignin"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="40dp"
+            android:layout_marginTop="05dp" />
+
+
+        <Button
+            android:layout_width="157dp"
+            android:layout_height="wrap_content"
+            android:text="@string/signin"
+            android:id="@+id/btnsignin"
+            android:minHeight="30dp"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:background="#C2185B"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerInParent="true" />
+        <Button
+            android:layout_width="157dp"
+            android:layout_height="wrap_content"
+            android:text="@string/signup"
+            android:id="@+id/btnsignup"
+            android:minHeight="30dp"
+            android:textColor="#ffffff"
+            android:textStyle="normal"
+            android:background="@android:color/transparent"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/btnsignin"
+            android:layout_alignStart="@+id/btnsignin"
+            android:layout_marginTop="40dp"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:layout_width="157dp"
+            android:layout_height="wrap_content"
+            android:text="@string/ForgetPassword"
+            android:id="@+id/btnforgotpassword"
+            android:minHeight="30dp"
+            android:textColor="#ffffff"
+            android:textStyle="normal"
+            android:background="@android:color/transparent"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="40dp" />
+
+    </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
