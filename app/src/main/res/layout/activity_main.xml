@@ -41,6 +41,14 @@
                 android:textColor="#ffffff"
                 android:textStyle="bold"
                 android:gravity="center" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity= "end"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/ic_more_vert_white_36dp"
+                android:id="@+id/menu" />
         </android.support.v7.widget.Toolbar>
 
         <view

@@ -15,7 +15,7 @@ public class User {
     String mDeviceId;
     String mPassword;
     String mUserId;
-    String mStatus;
+
     File mProfileImageFile;
     String mJobTitle;
     String mWorkAddress;
@@ -107,9 +107,6 @@ public class User {
         this.mProfileImageFile = mProfileImageFile;
     }
 
-    public void setmStatus(String mStatus) {
-        this.mStatus = mStatus;
-    }
 
     public void setmUserId(String mUserId) {
         this.mUserId = mUserId;
@@ -161,10 +158,6 @@ public class User {
 
     public String getmProfileImage() {
         return mProfileImage;
-    }
-
-    public String getmStatus() {
-        return mStatus;
     }
 
     public String getmUserId() {

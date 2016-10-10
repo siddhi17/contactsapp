@@ -44,5 +44,6 @@
     <string name="View">View</string>
     <string name="title_activity_main2">Register</string>
     <string name="title_activity_login"></string>
+    <string name="title_activity_pending_invites">PendingInvitesActivity</string>
 
 </resources>

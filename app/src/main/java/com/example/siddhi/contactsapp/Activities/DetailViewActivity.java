@@ -7,20 +7,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.example.siddhi.contactsapp.Contact;
 import com.example.siddhi.contactsapp.R;
-
 import java.io.File;
+
 
 /**
  * Created by Siddhi on 9/30/2016.
@@ -32,7 +28,6 @@ public class DetailViewActivity extends AppCompatActivity {
 
     private Intent mIntent;
     private Contact mContact;
-    private Toolbar mToolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
     private AppBarLayout mAppBarLayout;
@@ -50,7 +45,9 @@ public class DetailViewActivity extends AppCompatActivity {
         mContact = (Contact)mIntent.getSerializableExtra("contact");
 
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-    //    mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+       // mAppBarLayout.setExpanded(true,true);
+
 
         if(mContact.getmFullName().equals("")) {
             collapsingToolbarLayout.setTitle("Contact");
@@ -60,6 +57,7 @@ public class DetailViewActivity extends AppCompatActivity {
             collapsingToolbarLayout.setTitle(mContact.getmFullName());
         }
         if (toolbar != null) {
+
 
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 
@@ -75,8 +73,11 @@ public class DetailViewActivity extends AppCompatActivity {
             });
         }
         toolbarTextAppernce();
-//        mAppBarLayout.setExpanded(true);
 
+       // ScrollableAppBar appBarLayout = (ScrollableAppBar) findViewById(R.id.appbar);
+
+//To give the effect "in the middle" of the image (like gif)
+      //  appBarLayout.collapseToolbar();
         profileImage = (ImageView)findViewById(R.id.viewImage);
 
         edtEmailId = (EditText)findViewById(R.id.edtemail);

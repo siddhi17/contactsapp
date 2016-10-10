@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -53,10 +54,14 @@ import com.example.siddhi.contactsapp.database.ContactTableHelper;
 import com.example.siddhi.contactsapp.database.UserTableHelper;
 import com.example.siddhi.contactsapp.helper.DividerItemDecoration;
 import com.example.siddhi.contactsapp.helper.Excpetion2JSON;
+import com.example.siddhi.contactsapp.helper.MyFirebaseInstanceIDService;
+import com.example.siddhi.contactsapp.helper.ReadContactsPrmission;
 import com.example.siddhi.contactsapp.helper.RoundedImageView;
 import com.example.siddhi.contactsapp.helper.ServerRequest;
 import com.example.siddhi.contactsapp.helper.ServiceUrl;
 import com.example.siddhi.contactsapp.helper.SquareImageView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -72,9 +77,9 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class MainActivity extends AppCompatActivity implements GetContactsAsyncTask.ContactGetCallBack{
+public class MainActivity extends AppCompatActivity implements GetContactsAsyncTask.ContactGetCallBack {
 
-    private TextView txtuserName,txtmobile;
+    private TextView txtuserName, txtmobile;
     private static final String TAG = "RecyclerViewExample";
     private static String KEY_SUCCESS1 = "Success";
     private List<Contact> contactList = new ArrayList<>();
@@ -91,32 +96,33 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
     private String url;
     private Intent mIntent;
     private UserTableHelper mDb;
-    private Boolean firstTimeLogin,updateUser;
+    private Boolean firstTimeLogin, updateUser;
     private static final int MY_PERMISSIONS_REQUEST_CALL = 20;
     private ContactTableHelper contactDb;
+
+    String refreshedToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         contactDb = new ContactTableHelper(MainActivity.this);
         mDb = new UserTableHelper(MainActivity.this);
 
-        sharedpreferences = getSharedPreferences("UserId", Context.MODE_PRIVATE);
+     //   Intent intent=new Intent(MainActivity.this,MyFirebaseInstanceIDService.class);
+      //  startService(intent);
 
-        mUserId = sharedpreferences.getString("userId","");
+        sharedpreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
 
-        sharedpreferences = getSharedPreferences("InitialLogin", Context.MODE_PRIVATE);
+        mUserId = sharedpreferences.getString("userId", "");
 
-        firstTimeLogin = sharedpreferences.getBoolean("login",false);
+        firstTimeLogin = sharedpreferences.getBoolean("login", false);
 
         setupView();
 
         mUser = new User();
-        sharedpreferences = getSharedPreferences("Url", Context.MODE_PRIVATE);
 
-        url= sharedpreferences.getString("url","");
+        url = sharedpreferences.getString("url", "");
 
         contactList = new ArrayList<Contact>();
 
@@ -134,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                 public void onClick(View v) {
                     drawerLayout.closeDrawers();
                     Intent Intent = new Intent(MainActivity.this, ProfileActivity.class);
-                    Intent.putExtra("url",url);
+                    Intent.putExtra("url", url);
                     startActivity(Intent);
                 }
             });
@@ -175,14 +181,24 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
                     case R.id.nav_log_out:
 
-                        sharedpreferences = getSharedPreferences("UserId", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
 
-                        mUserId = sharedpreferences.getString("userId","");
+                        editor.remove("UserProfile");
+
+                        editor.commit();
+
+
 
                         finish();
-                        Intent i = new Intent(MainActivity.this,LoginActivity.class);
+                        Intent i = new Intent(MainActivity.this, LoginActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
+
+                        break;
+
+                    case R.id.nav_invie:
+
+                        startActivity(new Intent(MainActivity.this, InviteContactsActivity.class));
 
                         break;
 
@@ -196,6 +212,42 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
         TextView mTitle = (TextView) findViewById(R.id.toolbar_title);
         Toolbar.LayoutParams params = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.MATCH_PARENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
+
+        final ImageView menu = (ImageView) findViewById(R.id.menu);
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                PopupMenu popup = new PopupMenu(MainActivity.this, menu);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater().inflate(R.menu.main_pop_up_menu, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        if (item.getItemId() == R.id.notifications) {
+
+
+
+                        }
+                        else if(item.getItemId() == R.id.pendingInvites)
+                        {
+
+                            startActivity(new Intent(MainActivity.this,PendingInvitesActivity.class));
+
+                        }
+
+
+                        return true;
+                    }
+                });
+
+                popup.show();//showing popup menu
+            }
+        });//closing the setOnClickListener method
+
 
         mTitle.setLayoutParams(params);
         if (toolbar != null) {
@@ -212,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                 public void onClick(View v) {
                     drawerLayout.openDrawer(GravityCompat.START);
                     File sd = Environment.getExternalStorageDirectory();
-                    File image = new File(sd+"/Profile","Profile_Image.jpg");
+                    File image = new File(sd+"/Profile","Profile_Image.png");
                     BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                     Bitmap bitmap = BitmapFactory.decodeFile(image.getPath(),bmOptions);
 
@@ -515,4 +567,56 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
             }
         }
     }
+   /*     // Add custom implementation, as needed.
+
+        // To implement: Only if user is registered, i.e. UserId is available in preference, update token on server.
+
+        if (!token.equals("")) {
+            // Implement code to update registration token to server
+
+            SharedPreferences sharedPreferences1 = MainActivity.this.getSharedPreferences("UserProfile",MainActivity.this.MODE_PRIVATE);
+
+            String userName = sharedPreferences1.getString("UserUsername","");
+            String userId = sharedPreferences1.getString("userId","");
+            String url = sharedPreferences1.getString("url","");
+            boolean login = sharedPreferences1.getBoolean("login",false);
+            String mobileNo = sharedPreferences1.getString("mobileno","");
+            String jobTitle = sharedPreferences1.getString("jobTitle","");
+            String password = sharedPreferences1.getString("pass","");
+            String workPhone = sharedPreferences1.getString("workPhone","");
+            String workAddress = sharedPreferences1.getString("workAddress","");
+            String deviceId = sharedPreferences1.getString("deviceId","");
+            String homeAddress = sharedPreferences1.getString("homeAddress","");
+            String fullName = sharedPreferences1.getString("fullName","");
+            String profileImage = sharedPreferences1.getString("profileImage","");
+            String emailId = sharedPreferences1.getString("emailId","");
+
+
+            SharedPreferences.Editor editor = getBaseContext().getSharedPreferences("UserProfile",getApplicationContext().MODE_PRIVATE).edit();
+            editor.putString("UserUsername", userName);
+            editor.putString("userId", userId);
+            editor.putString("url", url);
+            editor.putBoolean("login",login);
+            editor.putString("mobileno",mobileNo);
+            editor.putString("jobTitle",jobTitle);
+            editor.putString("pass",password);
+            editor.putString("workPhone",workPhone);
+            editor.putString("workAddress",workAddress);
+            editor.putString("deviceId",token);
+            editor.putString("homeAddress",homeAddress);
+            editor.putString("fullName",fullName);
+            editor.putString("profileImage",profileImage);
+            editor.putString("emailId",emailId);
+            editor.commit();
+
+          //  File file = new File(profileImage);
+
+            new UpdateUserAsyncTask(this,MainActivity.this, userId, fullName, userName, password, mobileNo, emailId,refreshedToken, file, workAddress, workPhone, homeAddress, jobTitle).execute();
+
+        }
+    }
+
+    @Override
+    public void doPostExecute(JSONObject response, Boolean update) throws JSONException {
+    }*/
 }

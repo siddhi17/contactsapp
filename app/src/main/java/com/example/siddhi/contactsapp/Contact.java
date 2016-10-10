@@ -21,6 +21,8 @@ public class Contact implements Serializable{
     String mWorkPhone;
     String mHomeAddress;
 
+    Boolean isSelected = false;
+
     public Contact() {
     }
 
@@ -134,5 +136,13 @@ public class Contact implements Serializable{
 
     public void setContactId(String contactId) {
         this.contactId = contactId;
+    }
+
+    public void setSelected(Boolean selected) {
+        isSelected = selected;
+    }
+
+    public Boolean getSelected() {
+        return isSelected;
     }
 }

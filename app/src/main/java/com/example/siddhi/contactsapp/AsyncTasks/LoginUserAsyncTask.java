@@ -95,11 +95,20 @@ public class LoginUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
                 if (response.getString("message").equalsIgnoreCase(KEY_SUCCESS)) {
                     Toast.makeText(mContext, "user authenticated successfully", Toast.LENGTH_LONG).show();
                     userJson = response.getJSONObject("user");
+
+
                     String userId = userJson.getString("user_id");
                     String userName = userJson.getString("user_name");
                     String profileImage = userJson.getString("profile_image");
                     String mobileNo = userJson.getString("mobile_no");
-
+                    String homeAddress = userJson.getString("home_address");
+                    String workAddress = userJson.getString("work_address");
+                    String work_phone = userJson.getString("work_phone");
+                    String device_id = userJson.getString("device_id");
+                    String email_id = userJson.getString("email_id");
+                    String pass = userJson.getString("password");
+                    String full_name = userJson.getString("full_name");
+                    String job_title = userJson.getString("job_title");
 
                     String url = ServiceUrl.getBaseUrl() + ServiceUrl.getImageUserUrl() + profileImage;
                     Log.e("url", url);
@@ -141,30 +150,37 @@ public class LoginUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
 
                     user.setmUserId(userId);
                     user.setmUserName(userName);
-
                     user.setmProfileImage(profileImage);
                     user.setmMobileNo(mobileNo);
-
-
-                    SharedPreferences.Editor editor = mContext.getSharedPreferences("username", mContext.MODE_PRIVATE).edit();
-                    editor.putString("UserUsername", userName);
-                    editor.commit();
-
-                    editor = mContext.getSharedPreferences("UserId", mContext.MODE_PRIVATE).edit();
-                    editor.putString("userId", userId);
-                    editor.commit();
-
-                    editor = mContext.getSharedPreferences("Url", mContext.MODE_PRIVATE).edit();
-                    editor.putString("url", url);
-                    editor.commit();
-                    //       new ImageUserTask(mContext, url, profileImage).execute();
+                    user.setmFullName(full_name);
+                    user.setmHomeAddress(homeAddress);
+                    user.setmPassword(pass);
+                    user.setmEmailId(email_id);
+                    user.setmWorkPhone(work_phone);
+                    user.setmWorkAddress(workAddress);
+                    user.setmDeviceId(device_id);
+                    user.setmJobTitle(job_title);
 
                     firstTimeLogin = true;
 
-                    editor = mContext.getSharedPreferences("InitialLogin", mContext.MODE_PRIVATE).edit();
+                    SharedPreferences.Editor editor = mContext.getSharedPreferences("UserProfile", mContext.MODE_PRIVATE).edit();
+                    editor.putString("UserUsername", userName);
+                    editor.putString("userId", userId);
+                    editor.putString("url", url);
                     editor.putBoolean("login",firstTimeLogin);
+                    editor.putString("mobileno",mobileNo);
+                    editor.putString("jobTitle",job_title);
+                    editor.putString("pass",pass);
+                    editor.putString("workPhone",work_phone);
+                    editor.putString("workAddress",workAddress);
+                    editor.putString("deviceId",device_id);
+                    editor.putString("homeAddress",homeAddress);
+                    editor.putString("fullName",full_name);
+                    editor.putString("profileImage",profileImage);
+                    editor.putString("emailId",email_id);
                     editor.commit();
 
+                    //       new ImageUserTask(mContext, url, profileImage).execute();
 
                     Toast.makeText(mContext, "user authenticated successfully", Toast.LENGTH_LONG).show();
 

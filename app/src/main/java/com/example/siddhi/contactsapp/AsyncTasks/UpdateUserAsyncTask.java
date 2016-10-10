@@ -62,7 +62,7 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
         this.muserId = userId;
     }
 
-    public UpdateUserAsyncTask(UpdateUserCallBack updateUserCallBack,Context context, String userId, String fullName, String userName, String password, String mobileNo, String emailId, String status, String deviceId, File profileImage, String workAddress, String workPhone, String homeAddress, String jobTitle) {
+    public UpdateUserAsyncTask(UpdateUserCallBack updateUserCallBack,Context context, String userId, String fullName, String userName, String password, String mobileNo, String emailId, String deviceId, File profileImage, String workAddress, String workPhone, String homeAddress, String jobTitle) {
         this.mContext = context;
         this.updateUserCallBck = updateUserCallBack;
         this.muserName = userName;
@@ -77,7 +77,6 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
         this.mworkPhone = workPhone ;
         this.mhomeAddress = homeAddress;
         this.muserId = userId;
-        this.mstatus = status;
         this.result = result;
     }
 
@@ -103,7 +102,7 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
 
         return hasImage;
     }
-    @Override
+  /*  @Override
     protected void onPreExecute() {
         super.onPreExecute();
         //progressDialog
@@ -112,7 +111,7 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
         progressDialog.setIndeterminate(false);
         progressDialog.setCancelable(false);
         progressDialog.show();
-    }
+    }*/
     @Override
     protected JSONObject doInBackground(String... params) {
         try {
@@ -128,7 +127,6 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
             String deviceId = this.mdeviceId; // params[3] is deviceid
             String mobileNo = this.mmobileNo; // params[4] is mobile
             String emailId = this.memailId;  // params[5] is emailid
-            String status = this.mstatus;   // params[6] is status
             String fullName = this.mfullName; // params[7] is fullname
             String jobTitle = this.mjobTitle;  // params[8] is jobtitle
             String workAddress = this.mworkAddress; // params[9] is workaddress
@@ -142,7 +140,6 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
             jsonParams.put("email_id", emailId);
             jsonParams.put("device_id", deviceId);
             jsonParams.put("full_name", fullName);
-            jsonParams.put("status", status);
             jsonParams.put("job_title", jobTitle);
             jsonParams.put("work_address", workAddress);
             jsonParams.put("work_phone", workPhone);
@@ -179,15 +176,15 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
             try {
                 if (response.getString("message").equalsIgnoreCase(KEY_SUCCESS1)) {
                     Toast.makeText(mContext, "success", Toast.LENGTH_LONG).show();
-                    progressDialog.dismiss();
+                 //   progressDialog.dismiss();
 
                     updateUser = true;
                     updateUserCallBck.doPostExecute(response,updateUser);
 
                 } else {
-                    Toast.makeText(mContext, "Could not get user information.", Toast.LENGTH_LONG).show();
+               //     Toast.makeText(mContext, "Could not get user information.", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(mContext, ProfileActivity.class);
-                    progressDialog.dismiss();
+               //     progressDialog.dismiss();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

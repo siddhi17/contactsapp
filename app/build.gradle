@@ -9,11 +9,13 @@ android {
         minSdkVersion 14
         targetSdkVersion 24
         versionCode 1
+        multiDexEnabled true
         versionName "1.0"
     }
     buildTypes {
         release {
             minifyEnabled false
+
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -27,5 +29,11 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.android.support:design:24.2.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
-
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.google.android.gms:play-services:9.6.1'
+    compile 'com.google.firebase:firebase-messaging:9.6.1'
+    compile 'com.firebase:firebase-client-android:2.5.1'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.google.firebase:firebase-core:9.6.1'
 }
+apply plugin: 'com.google.gms.google-services'

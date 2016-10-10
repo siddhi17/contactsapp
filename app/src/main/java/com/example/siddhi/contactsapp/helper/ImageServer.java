@@ -63,7 +63,7 @@ public class ImageServer  {
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(mypath);
-            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -129,4 +129,5 @@ public class ImageServer  {
             }
         }
         return null;
-    }}
+    }
+}

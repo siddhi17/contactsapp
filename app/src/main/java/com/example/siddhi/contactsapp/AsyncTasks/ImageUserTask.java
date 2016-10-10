@@ -1,5 +1,6 @@
 package com.example.siddhi.contactsapp.AsyncTasks;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
@@ -15,6 +16,9 @@ import com.example.siddhi.contactsapp.Activities.ProfileActivity;
 import com.example.siddhi.contactsapp.helper.ImageServer;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -42,7 +46,18 @@ public class ImageUserTask extends AsyncTask<Void,Void,Bitmap> {
     Context mContext;
     private File profileFile;
     private Boolean mProfile;
+    private ImageServerCallBack imageServerCallBack;
 
+    public interface ImageServerCallBack {
+        void doPostExecute(Bitmap bitmap) throws JSONException;
+    }
+
+    public ImageUserTask(Context context, String url,ImageServerCallBack imageServerCallBack) {
+        this.strURL = url;
+        this.imageprofile = imageprofile;
+        this.mContext = context;
+        this.imageServerCallBack = imageServerCallBack;
+    }
     public ImageUserTask(Context context, String url) {
         this.strURL = url;
         this.imageprofile = imageprofile;
@@ -54,7 +69,7 @@ public class ImageUserTask extends AsyncTask<Void,Void,Bitmap> {
 
         try {
 
-            URL url = new URL(strURL);
+        /*    URL url = new URL(strURL);
             InputStream in = url.openConnection().getInputStream();
             BufferedInputStream bis = new BufferedInputStream(in,1024*8);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -68,7 +83,18 @@ public class ImageUserTask extends AsyncTask<Void,Void,Bitmap> {
             bis.close();
 
             byte[] data = out.toByteArray();
-            mBitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            mBitmap = BitmapFactory.decodeByteArray(data,0, data.length);*/
+
+            URL urlConnection = new URL(strURL);
+            //Conntecting httpUrlConnection
+            HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
+            connection.setDoInput(true);
+            //Connected to server
+            connection.connect();
+            //downloading  image
+            InputStream input = connection.getInputStream();
+            //converting image to bitmap
+            mBitmap = BitmapFactory.decodeStream(input);
 
 
             storeImage(mBitmap);
@@ -87,10 +113,12 @@ public class ImageUserTask extends AsyncTask<Void,Void,Bitmap> {
         super.onPostExecute(result);
 
         if (result != null) {
-
-           Bitmap bitmap = result;
-
-
+            try {
+                if(imageServerCallBack != null)
+                imageServerCallBack.doPostExecute(result);
+            }
+            catch (JSONException exception)
+            {}
         }
     }private void storeImage(Bitmap image) {
 
@@ -102,14 +130,14 @@ public class ImageUserTask extends AsyncTask<Void,Void,Bitmap> {
                 myDir.mkdirs();
             }
 
-            String fname = "Profile_Image" + ".jpg";
+            String fname = "Profile_Image" + ".png";
 
             File file = new File(myDir, fname);
             Log.i("file", "" + file);
 
             try {
                 FileOutputStream out = new FileOutputStream(file);
-                image.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                image.compress(Bitmap.CompressFormat.PNG,100, out);
                 out.flush();
                 out.close();
             } catch (Exception e) {
@@ -138,7 +166,7 @@ public class ImageUserTask extends AsyncTask<Void,Void,Bitmap> {
         // Create a media file name
         String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmm").format(new Date());
         File mediaFile;
-        String mImageName="Profile_Image" +".jpg";
+        String mImageName="Profile_Image" +".png";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
         return mediaFile;
     }

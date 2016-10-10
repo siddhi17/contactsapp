@@ -147,18 +147,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
             Picasso.with(mContext).load(url)
                     .error(R.drawable.ic_account_circle_black_24dp)
                     .placeholder(R.drawable.ic_account_circle_black_24dp)
-                    .resize(100, 100)
                     .into(target);
-
-
         }
 
         contactHolder.title.setText(contact.getmUserName());
         //feedListRowHolder.genre.setText(Html.fromHtml(feedItem.getGenre()));
-
-
-
-
 
     }
 
@@ -183,7 +176,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
             File myDir1 = new File(myDir, name);
             if(!myDir1.exists()) {
                 FileOutputStream out = new FileOutputStream(myDir1);
-                bitmap.compress(Bitmap.CompressFormat.JPEG,100, out);
+                bitmap.compress(Bitmap.CompressFormat.PNG,100,out);
 
                 out.flush();
                 out.close();
@@ -298,11 +291,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
             image3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(Intent.ACTION_SENDTO);
-                    intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-                    intent.putExtra(Intent.EXTRA_EMAIL,contact.getmEmailId());
-                    intent.putExtra(Intent.EXTRA_SUBJECT,"");
-                        mContext.startActivity(intent);
+                    Intent email = new Intent(Intent.ACTION_SEND);
+                    email.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getmEmailId()});
+                    email.setType("message/rfc822");
+                    mContext.startActivity(Intent.createChooser(email, "Choose an Email client :"));
 
                 }
             });

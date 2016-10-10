@@ -26,7 +26,7 @@ public class StartUpActivity extends AppCompatActivity {
         db.createDatabase();
 
 
-        sharedpreferences = getSharedPreferences("username", Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
 
         userUsername = sharedpreferences.getString("UserUsername","");
 

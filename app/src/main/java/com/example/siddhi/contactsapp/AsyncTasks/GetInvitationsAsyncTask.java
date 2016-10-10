@@ -2,60 +2,60 @@ package com.example.siddhi.contactsapp.AsyncTasks;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
-
-import com.example.siddhi.contactsapp.Activities.MainActivity;
+import com.example.siddhi.contactsapp.Invitation;
 import com.example.siddhi.contactsapp.helper.Excpetion2JSON;
 import com.example.siddhi.contactsapp.helper.ServerRequest;
 import com.example.siddhi.contactsapp.helper.ServiceUrl;
-import com.example.siddhi.contactsapp.helper.UnexpectedServerException;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Yogendra singh on 03-09-2016.
+ * Created by Siddhi on 10/6/2016.
  */
-public class GetUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
+public class GetInvitationsAsyncTask  extends AsyncTask<String, Void, JSONObject> {
     String api;
-    String muserId;
+    String userId;
     JSONObject jsonParams;
-    public JSONObject userJs;
-    private ProgressDialog progressDialog;
+    private List<Invitation> invitationList = new ArrayList<Invitation>();
+    public JSONArray invitationListArray;
+    GetInvitationsCallBack getInvitationsCallBack;
     private static String KEY_SUCCESS1 = "Success";
     private Context mContext;
-    GetUserCallBack getUserCallBack;
+    private ProgressDialog progressDialog;
 
-
-    public GetUserAsyncTask(GetUserCallBack getUserCallBack, Context context, String userId) {
+    public GetInvitationsAsyncTask(GetInvitationsCallBack getInvitationsCallBack, Context context, String userId) {
         this.mContext = context;
-        this.getUserCallBack = getUserCallBack;
-        this.muserId = userId;
+        this.userId = userId;
+        this.getInvitationsCallBack=getInvitationsCallBack;
+        this.progressDialog = new ProgressDialog(mContext);
+    }
+    public interface GetInvitationsCallBack {
+        void doPostExecute(JSONArray response) throws JSONException;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressDialog=new ProgressDialog(mContext);
+        // progressDialog=new ProgressDialog(mContext);
         progressDialog.setMessage("Getting information Please wait...");
         progressDialog.setIndeterminate(false);
         progressDialog.setCancelable(false);
         progressDialog.show();
     }
-
     @Override
-    protected JSONObject doInBackground(String... params) {
+    protected JSONObject doInBackground(String...params) {
         try {
-            api = ServiceUrl.getBaseUrl() + ServiceUrl.getUser();
+            api = ServiceUrl.getBaseUrl() + "getInvitations.php";
             jsonParams = new JSONObject();
 
-            String userId = this.muserId; // params[0] is userid
+            String user_id = this.userId;
 
-            jsonParams.put("user_id", userId);
+            jsonParams.put("sender_id", user_id); // params[0] is userid
 
             ServerRequest request = new ServerRequest(api, jsonParams);
             return request.sendRequest();
@@ -70,25 +70,17 @@ public class GetUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
         super.onPostExecute(response);
 
         if (response.has("message")) {
-
-            String message = null;
             try {
-
                 if (response.getString("message").equalsIgnoreCase(KEY_SUCCESS1)) {
+                //    Toast.makeText(mContext, "success", Toast.LENGTH_LONG).show();
 
-                     userJs = response.getJSONObject("user");
-                    getUserCallBack.doPostExecute(userJs);
-
-                    Toast.makeText(mContext, "Success", Toast.LENGTH_LONG).show();
+                    invitationListArray = response.getJSONArray("Invitations");
+                    getInvitationsCallBack.doPostExecute(invitationListArray);
 
                     progressDialog.dismiss();
-
-
                 } else {
-                    Toast.makeText(mContext, "Success", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Unable to Fetch Invitations", Toast.LENGTH_LONG).show();
                     progressDialog.dismiss();
-                    Intent intent = new Intent(mContext, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    mContext.startActivity(intent);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -96,11 +88,4 @@ public class GetUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
             }
         }
     }
-
-    public interface GetUserCallBack{
-        void doPostExecute(JSONObject response) throws JSONException;
-    }
-
-    // onPostExecute displays the results of the AsyncTask.
 }
-

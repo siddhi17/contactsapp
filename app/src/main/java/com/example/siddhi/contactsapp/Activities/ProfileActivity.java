@@ -53,7 +53,7 @@ import java.io.IOException;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTask.GetUserCallBack,UpdateUserAsyncTask.UpdateUserCallBack{
+public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTask.GetUserCallBack,UpdateUserAsyncTask.UpdateUserCallBack,ImageUserTask.ImageServerCallBack{
     //Declaring the EditText object
     EditText edtfullName;
     EditText edtemail;
@@ -83,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
     private String mUserId,url;
     private String userChoosenTask;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
-    private Boolean mProfile,mUpdateUser;
+    private Boolean mProfile,mUpdateUser,login;
     private Intent mIntent;
     private UserTableHelper mDb;
 
@@ -92,9 +92,11 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_profile);
-        sharedpreferences = getSharedPreferences("UserId", Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
 
         mUserId = sharedpreferences.getString("userId","");
+
+        login = sharedpreferences.getBoolean("login",false);
 
         mDb = new UserTableHelper(ProfileActivity.this);
 
@@ -118,7 +120,7 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         profileImageView = (CircleImageView)findViewById(R.id.thumbnail);
 
         File sd = Environment.getExternalStorageDirectory();
-        File image = new File(sd+"/Profile","Profile_Image.jpg");
+        File image = new File(sd+"/Profile","Profile_Image.png");
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         Bitmap bitmap = BitmapFactory.decodeFile(image.getPath(),bmOptions);
 
@@ -130,9 +132,7 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
             profileImageView.setImageDrawable(ContextCompat.getDrawable(ProfileActivity.this,R.drawable.profile_icon));
         }
 
-        sharedpreferences = getSharedPreferences("Url", Context.MODE_PRIVATE);
-
-        url = sharedpreferences.getString("url","");
+      //  url = sharedpreferences.getString("url","");
 
      //   Picasso.with(ProfileActivity.this).load(url).into(profileImageView);
         //Changing EditText bottom line color
@@ -224,14 +224,11 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
 
                 Validation.hasText(edtworkAdd);
             }
-
             public void beforeTextChanged(CharSequence s,
                                           int start, int count, int after) {
 
             }
-
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
         });
 
@@ -261,7 +258,7 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         mTitle.setLayoutParams(params);
 
         if (toolbar != null) {
-            toolbar.setTitle(" ");
+            toolbar.setTitle("");
             setSupportActionBar(toolbar);
         }
 
@@ -379,10 +376,10 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        thumbnail.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 
         File destination = new File(Environment.getExternalStorageDirectory(),
-                System.currentTimeMillis() + ".jpg");
+                System.currentTimeMillis() + ".png");
 
         FileOutputStream fo;
         try {
@@ -422,27 +419,23 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
 
         //  }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, stream); //replace 100 with desired quality percentage.
+        bm.compress(Bitmap.CompressFormat.PNG, 100, stream); //replace 100 with desired quality percentage.
         byte[] byteArray = stream.toByteArray();
 
         try {
-
 
             File tempFile = File.createTempFile("temp",null, getCacheDir());
             FileOutputStream fos = new FileOutputStream(tempFile);
             fos.write(byteArray);
 
             profileImage = tempFile;
+
         }
         catch (IOException e)
         {
 
-
         }
-
         profileImageView.setImageBitmap(bm);
-
-
     }
     private void selectImage() {
         final CharSequence[] items = { "Take Photo", "Choose from Library",
@@ -548,7 +541,7 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         String deviceId = mUser.getmDeviceId();
         String password = edtPassword.getText().toString();
         String userId = mUser.getmUserId();
-        String status = mUser.getmStatus();
+
         String imageprofile = mUser.getmProfileImage();
 
         String jobTitle = edtjobTitles.getText().toString();
@@ -564,11 +557,15 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
 
 
         if (profileImage == null) {
-            new UpdateUserAsyncTask(this,ProfileActivity.this, userId, fullName, userName, password, mobileNo, emailId, status, deviceId, mSavedProfileImage, workAddress, workPhone, homeAddress, jobTitle).execute();
+
+
+            new UpdateUserAsyncTask(this,ProfileActivity.this, userId, fullName, userName, password, mobileNo, emailId, deviceId, mSavedProfileImage, workAddress, workPhone, homeAddress, jobTitle).execute();
+
 
         } else {
 
-            new UpdateUserAsyncTask(this,ProfileActivity.this, userId, fullName, userName, password, mobileNo, emailId, status, deviceId, profileImage, workAddress, workPhone, homeAddress, jobTitle).execute();
+            new UpdateUserAsyncTask(this,ProfileActivity.this, userId, fullName, userName, password, mobileNo, emailId, deviceId, profileImage, workAddress, workPhone, homeAddress, jobTitle).execute();
+
 
             //  String profile = convertFileToString(profileImage);
         }
@@ -597,7 +594,27 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         String homeAddress = userJs.getString("home_address");
         String workPhone = userJs.getString("work_phone");
         String workAddress = userJs.getString("work_address");
+        String imageprofile = mUser.getmProfileImage();
 
+        String url = ServiceUrl.getBaseUrl() + ServiceUrl.getImageUserUrl() + imageprofile;
+        Log.e("url", url);
+
+        SharedPreferences.Editor editor = ProfileActivity.this.getSharedPreferences("UserProfile", ProfileActivity.this.MODE_PRIVATE).edit();
+        editor.putString("UserUsername", userName);
+        editor.putString("userId", userId);
+        editor.putString("url", url);
+        editor.putBoolean("login",login);
+        editor.putString("mobileno",mobileNo);
+        editor.putString("jobTitle",jobTitle);
+        editor.putString("pass",password);
+        editor.putString("workPhone",workPhone);
+        editor.putString("workAddress",workAddress);
+        editor.putString("deviceId",deviceId);
+        editor.putString("homeAddress",homeAddress);
+        editor.putString("fullName",fullName);
+        editor.putString("profileImage",profileImage);
+        editor.putString("emailId",emailId);
+        editor.commit();
 
         mUser.setmFullName(fullName);
         mUser.setmWorkAddress(workAddress);
@@ -609,10 +626,8 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         mUser.setmHomeAddress(homeAddress);
         mUser.setmPassword(password);
         mUser.setmMobileNo(mobileNo);
-        mUser.setmStatus(status);
         mUser.setmProfileImage(profileImage);
         mUser.setmUserName(userName);
-
 
             edtuserName.setText(mUser.getmUserName());
             edtfullName.setText(mUser.getmFullName());
@@ -623,17 +638,15 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
             edtworkAdd.setText(mUser.getmWorkAddress());
             edtworkPhone.setText(mUser.getmWorkPhone());
             edtjobTitles.setText(mUser.getmJobTitle());
-            String imageprofile = mUser.getmProfileImage();
+
+
 
         mDb = new UserTableHelper(ProfileActivity.this);
-        mDb.addUser(new User(userId,userName,password,mobileNo,emailId,imageprofile,fullName,
+        mDb.updateUser(new User(userId,userName,password,mobileNo,emailId,imageprofile,fullName,
                 deviceId,jobTitle,homeAddress,workAddress,workPhone));
 
-        Log.e("userFromDatabase",String.valueOf(mDb.getUser(userId)));
-        String url = ServiceUrl.getBaseUrl() + ServiceUrl.getImageUserUrl() + imageprofile;
-        Log.e("url", url);
 
-        new ImageUserTask(ProfileActivity.this,url).execute();
+        new ImageUserTask(ProfileActivity.this,url,this).execute();
 
         Intent i = new Intent(ProfileActivity.this,ProfileActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -644,9 +657,8 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
 
             Bitmap bm = BitmapFactory.decodeFile(profileImage.getPath());
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
             byte[] b = baos.toByteArray();
-
 
             String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
 
@@ -655,6 +667,21 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
     }
     public void setUI()
     {
+
+     /*   String userName = sharedpreferences.getString("UserUsername","");
+        String userId = sharedpreferences.getString("userId","");
+        String url = sharedpreferences.getString("url","");
+        login = sharedpreferences.getBoolean("login",false);
+        String mobileNo = sharedpreferences.getString("mobileno","");
+        String jobTitle = sharedpreferences.getString("jobTitle","");
+        String password = sharedpreferences.getString("pass","");
+        String workPhone = sharedpreferences.getString("workPhone","");
+        String workAddress = sharedpreferences.getString("workAddress","");
+        String deviceId = sharedpreferences.getString("deviceId","");
+        String homeAddress = sharedpreferences.getString("homeAddress","");
+        String fullName = sharedpreferences.getString("fullName","");
+        String profileImage = sharedpreferences.getString("profileImage","");
+        String emailId = sharedpreferences.getString("emailId","");*/
 
 
         edtuserName.setText(mUser.getmUserName());
@@ -667,7 +694,6 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         edtworkPhone.setText(mUser.getmWorkPhone());
         edtjobTitles.setText(mUser.getmJobTitle());
 
-
     }
     @Override
     public void doPostExecute(JSONObject response,Boolean update) throws JSONException {
@@ -679,5 +705,20 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         new GetUserAsyncTask(this, ProfileActivity.this, mUserId).execute(mUserId);
 
     }
+    @Override
+    public void doPostExecute(Bitmap BitmapImage) throws JSONException {
 
+      //  File sd = Environment.getExternalStorageDirectory();
+     //   File image = new File(sd+"/Profile","Profile_Image.png");
+      //  BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+     //   Bitmap bitmap = BitmapFactory.decodeFile(image.getPath(),bmOptions);
+
+        if(BitmapImage != null) {
+
+            profileImageView.setImageBitmap(BitmapImage);
+        }
+        else {
+            profileImageView.setImageDrawable(ContextCompat.getDrawable(ProfileActivity.this,R.drawable.profile_icon));
+        }
+    }
 }

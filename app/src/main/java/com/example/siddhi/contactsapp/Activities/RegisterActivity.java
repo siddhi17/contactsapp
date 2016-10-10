@@ -59,8 +59,6 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("CheckLists");
-        setSupportActionBar(toolbar);
 
         imageViewBack = (ImageView)findViewById(R.id.imageViewBack) ;
 
@@ -261,10 +259,10 @@ public class RegisterActivity extends AppCompatActivity {
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        thumbnail.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 
         File destination = new File(Environment.getExternalStorageDirectory(),
-                System.currentTimeMillis() + ".jpg");
+                System.currentTimeMillis() + ".png");
 
         FileOutputStream fo;
         try {
@@ -304,7 +302,7 @@ public class RegisterActivity extends AppCompatActivity {
 
       //  }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, stream); //replace 100 with desired quality percentage.
+        bm.compress(Bitmap.CompressFormat.PNG, 100, stream); //replace 100 with desired quality percentage.
         byte[] byteArray = stream.toByteArray();
 
         try {
@@ -379,7 +377,7 @@ public class RegisterActivity extends AppCompatActivity {
         String confirm = edtconfirmPassword.getText().toString();
         String mobileNo = edtmobile.getText().toString();
         String emailId = edtemail.getText().toString();
-        String deviceId = "233";
+        String deviceId = "";
 
         new RegisterUserAsyncTask(RegisterActivity.this, fullName, userName, password, mobileNo, emailId, deviceId,mProfileImage).execute();
 

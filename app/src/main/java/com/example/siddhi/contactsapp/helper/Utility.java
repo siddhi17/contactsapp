@@ -16,7 +16,7 @@ import android.support.v7.app.AlertDialog;
  * Created by Shreya Kotak on 12/05/16.
  */
 public class Utility {
-    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123,READ_SMS = 80,WRITE_SMS = 90;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static boolean checkPermission(final Context context)
