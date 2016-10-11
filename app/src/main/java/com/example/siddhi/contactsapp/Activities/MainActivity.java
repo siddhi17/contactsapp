@@ -4,8 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -20,6 +22,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +58,7 @@ import com.example.siddhi.contactsapp.database.UserTableHelper;
 import com.example.siddhi.contactsapp.helper.DividerItemDecoration;
 import com.example.siddhi.contactsapp.helper.Excpetion2JSON;
 import com.example.siddhi.contactsapp.helper.MyFirebaseInstanceIDService;
+import com.example.siddhi.contactsapp.helper.NotificationUtils;
 import com.example.siddhi.contactsapp.helper.ReadContactsPrmission;
 import com.example.siddhi.contactsapp.helper.RoundedImageView;
 import com.example.siddhi.contactsapp.helper.ServerRequest;
@@ -77,7 +81,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class MainActivity extends AppCompatActivity implements GetContactsAsyncTask.ContactGetCallBack {
+public class MainActivity extends AppCompatActivity implements GetContactsAsyncTask.ContactGetCallBack,UpdateUserAsyncTask.UpdateUserCallBack {
 
     private TextView txtuserName, txtmobile;
     private static final String TAG = "RecyclerViewExample";
@@ -99,8 +103,11 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
     private Boolean firstTimeLogin, updateUser;
     private static final int MY_PERMISSIONS_REQUEST_CALL = 20;
     private ContactTableHelper contactDb;
-
+    private File image;
     String refreshedToken;
+    public static final String REGISTRATION_COMPLETE = "registrationComplete";
+    public static final String PUSH_NOTIFICATION = "pushNotification";
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
      //   Intent intent=new Intent(MainActivity.this,MyFirebaseInstanceIDService.class);
       //  startService(intent);
+
+        refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
         sharedpreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
 
@@ -148,7 +157,8 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
     }
 
     void setupView() {
-
+        File sd = Environment.getExternalStorageDirectory();
+        image = new File(sd+"/Profile","Profile_Image.png");
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -186,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                         editor.remove("UserProfile");
 
                         editor.commit();
-
 
 
                         finish();
@@ -263,8 +272,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                 @Override
                 public void onClick(View v) {
                     drawerLayout.openDrawer(GravityCompat.START);
-                    File sd = Environment.getExternalStorageDirectory();
-                    File image = new File(sd+"/Profile","Profile_Image.png");
+
                     BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                     Bitmap bitmap = BitmapFactory.decodeFile(image.getPath(),bmOptions);
 
@@ -389,6 +397,17 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
     public void onResume()
     {
         super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(REGISTRATION_COMPLETE));
+
+        // register new push message receiver
+        // by doing this, the activity will be notified each time a new message arrives
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(PUSH_NOTIFICATION));
+
+        // clear the notification area when the app is opened
+        NotificationUtils.clearNotifications(getApplicationContext());
+
 
         if(!firstTimeLogin)
         {
@@ -542,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
                         mDb = new UserTableHelper(MainActivity.this);
                         mDb.addUser(new User(userId, userName, password, mobileNo, emailId, profileImage, fullName,
-                                deviceId, jobTitle, homeAddress, workAddress, workPhone));
+                               refreshedToken, jobTitle, homeAddress, workAddress, workPhone));
 
                         Log.e("userFromDatabase", String.valueOf(mDb.getUser(userId)));
 
@@ -555,6 +574,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                         txtuserName.setText(mUser.getmUserName());
                         txtmobile.setText(mUser.getmMobileNo());
 
+                        new UpdateUserAsyncTask(MainActivity.this,MainActivity.this, userId, fullName, userName, password, mobileNo, emailId,refreshedToken,image, workAddress, workPhone, homeAddress, jobTitle).execute();
 
                     } else {
                         Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_LONG).show();
@@ -567,56 +587,16 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
             }
         }
     }
-   /*     // Add custom implementation, as needed.
+        // Add custom implementation, as needed.
 
         // To implement: Only if user is registered, i.e. UserId is available in preference, update token on server.
 
-        if (!token.equals("")) {
-            // Implement code to update registration token to server
-
-            SharedPreferences sharedPreferences1 = MainActivity.this.getSharedPreferences("UserProfile",MainActivity.this.MODE_PRIVATE);
-
-            String userName = sharedPreferences1.getString("UserUsername","");
-            String userId = sharedPreferences1.getString("userId","");
-            String url = sharedPreferences1.getString("url","");
-            boolean login = sharedPreferences1.getBoolean("login",false);
-            String mobileNo = sharedPreferences1.getString("mobileno","");
-            String jobTitle = sharedPreferences1.getString("jobTitle","");
-            String password = sharedPreferences1.getString("pass","");
-            String workPhone = sharedPreferences1.getString("workPhone","");
-            String workAddress = sharedPreferences1.getString("workAddress","");
-            String deviceId = sharedPreferences1.getString("deviceId","");
-            String homeAddress = sharedPreferences1.getString("homeAddress","");
-            String fullName = sharedPreferences1.getString("fullName","");
-            String profileImage = sharedPreferences1.getString("profileImage","");
-            String emailId = sharedPreferences1.getString("emailId","");
-
-
-            SharedPreferences.Editor editor = getBaseContext().getSharedPreferences("UserProfile",getApplicationContext().MODE_PRIVATE).edit();
-            editor.putString("UserUsername", userName);
-            editor.putString("userId", userId);
-            editor.putString("url", url);
-            editor.putBoolean("login",login);
-            editor.putString("mobileno",mobileNo);
-            editor.putString("jobTitle",jobTitle);
-            editor.putString("pass",password);
-            editor.putString("workPhone",workPhone);
-            editor.putString("workAddress",workAddress);
-            editor.putString("deviceId",token);
-            editor.putString("homeAddress",homeAddress);
-            editor.putString("fullName",fullName);
-            editor.putString("profileImage",profileImage);
-            editor.putString("emailId",emailId);
-            editor.commit();
-
-          //  File file = new File(profileImage);
-
-            new UpdateUserAsyncTask(this,MainActivity.this, userId, fullName, userName, password, mobileNo, emailId,refreshedToken, file, workAddress, workPhone, homeAddress, jobTitle).execute();
-
-        }
-    }
-
     @Override
     public void doPostExecute(JSONObject response, Boolean update) throws JSONException {
-    }*/
+
+
+
+
+
+    }
 }

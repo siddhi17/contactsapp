@@ -42,6 +42,7 @@ import com.example.siddhi.contactsapp.User;
 import com.example.siddhi.contactsapp.database.ContactTableHelper;
 import com.example.siddhi.contactsapp.helper.DividerItemDecoration;
 import com.example.siddhi.contactsapp.helper.MessageService;
+import com.example.siddhi.contactsapp.helper.SendSmsPermission;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -70,6 +71,7 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
 
     private static final String PHONE_NUMBER = ContactsContract.CommonDataKinds.Phone.NUMBER;
     private static final String PHONE_CONTACT_ID = ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
+    private boolean selectAll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +91,7 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
             setSupportActionBar(toolbar);
 
         }
-        ImageView back = (ImageView) findViewById(R.id.imageBack);
+        final ImageView back = (ImageView) findViewById(R.id.imageBack);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,22 +102,30 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
             }
         });
 
-        final ImageView selectAll = (ImageView) findViewById(R.id.imageMenu);
+        final ImageView menu = (ImageView) findViewById(R.id.imageMenu);
 
-        selectAll.setOnClickListener(new View.OnClickListener() {
+        menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                PopupMenu popup = new PopupMenu(InviteContactsActivity.this, selectAll);
+                PopupMenu popup = new PopupMenu(InviteContactsActivity.this, menu);
 
                 popup.getMenuInflater().inflate(R.menu.pop_up_menu, popup.getMenu());
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
 
+                        switch (item.getItemId()) {
+                            case R.id.selectAll:
+                                mAdapter.toggleContactsSelection(true);
+                                return true;
+                            case R.id.inviteByUserName:
 
-                        mAdapter.toggleContactsSelection(true);
+                                startActivity(new Intent(InviteContactsActivity.this,InviteByUsername.class));
 
+                                return true;
+
+                        }
                         return true;
                     }
                 });
@@ -209,6 +219,22 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
                             Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }*/
+
+
+                if(SendSmsPermission.checkPermission(InviteContactsActivity.this)) {
+
+                    Intent serviceIntent = new Intent(this, MessageService.class);
+                    serviceIntent.putStringArrayListExtra("numbers", numbers);
+                    startService(serviceIntent);
+                    IntentFilter filter = new IntentFilter();
+                    this.registerReceiver(smsDeliveredReceiver, filter);
+                    filter = new IntentFilter();
+                    this.registerReceiver(smsSentReceiver, filter);
+                }
+                else {
+                    boolean r = SendSmsPermission.checkPermission(InviteContactsActivity.this);
+                }
+
             } else {
                 subObject1 = response.getJSONObject(i);
 
@@ -217,19 +243,8 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
             }
         }
 
-        if(isReceiveSmsAllowed()) {
+       // requestSmsPermission();
 
-            Intent serviceIntent = new Intent(this, MessageService.class);
-            serviceIntent.putStringArrayListExtra("numbers", numbers);
-            startService(serviceIntent);
-            IntentFilter filter = new IntentFilter();
-            this.registerReceiver(smsDeliveredReceiver, filter);
-            filter = new IntentFilter();
-            this.registerReceiver(smsSentReceiver, filter);
-        }
-        else {
-            requestSmsPermission();
-        }
     }
 
     private boolean isSendSmsAllowed() {

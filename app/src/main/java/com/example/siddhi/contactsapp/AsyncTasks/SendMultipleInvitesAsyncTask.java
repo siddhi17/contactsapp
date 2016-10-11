@@ -74,8 +74,6 @@ public class SendMultipleInvitesAsyncTask extends AsyncTask<String, Void, JSONOb
 
                 sendMultipleInvitesCallBack.doPostExecute(invitesArray);
 
-
-
             }
             else{
                 //  Toast.makeText(context, message, Toast.LENGTH_LONG).show();

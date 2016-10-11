@@ -3,13 +3,17 @@ package com.example.siddhi.contactsapp.Activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,9 +33,10 @@ public class DetailViewActivity extends AppCompatActivity {
     private Intent mIntent;
     private Contact mContact;
     private CollapsingToolbarLayout collapsingToolbarLayout;
-
-    private AppBarLayout mAppBarLayout;
-
+    private CoordinatorLayout coordinatorLayout;
+    final int version = android.os.Build.VERSION.SDK_INT;
+    private AppBarLayout appBarLayout;
+    private int width;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,10 +49,39 @@ public class DetailViewActivity extends AppCompatActivity {
 
         mContact = (Contact)mIntent.getSerializableExtra("contact");
 
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-       // mAppBarLayout.setExpanded(true,true);
+        final Display dWidth = getWindowManager().getDefaultDisplay();
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.cordinator_layout);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
 
+        appBarLayout.post(new Runnable() {
+            @Override
+            public void run() {
+
+                if (version >= 13)
+                {
+                    Point size = new Point();
+                    dWidth.getSize(size);
+                    width = size.x;
+                }
+                else {
+                    int heightPx = dWidth.getWidth() * 1 / 3;
+                    setAppBarOffset(heightPx);
+                }
+            }
+        });
+
+        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapse_toolbar);
+        ImageView toolbarImage = (ImageView) findViewById(R.id.view_image);
+        toolbarImage.getLayoutParams().height = dWidth.getWidth();
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.square_image);
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                int mutedColor = palette.getMutedColor(getResources().getColor(R.color.colorPrimary));
+                collapsingToolbarLayout.setContentScrimColor(mutedColor);
+            }
+        });
 
         if(mContact.getmFullName().equals("")) {
             collapsingToolbarLayout.setTitle("Contact");
@@ -72,13 +106,12 @@ public class DetailViewActivity extends AppCompatActivity {
 
             });
         }
-        toolbarTextAppernce();
+       // toolbarTextAppernce();
 
        // ScrollableAppBar appBarLayout = (ScrollableAppBar) findViewById(R.id.appbar);
 
 //To give the effect "in the middle" of the image (like gif)
       //  appBarLayout.collapseToolbar();
-        profileImage = (ImageView)findViewById(R.id.viewImage);
 
         edtEmailId = (EditText)findViewById(R.id.edtemail);
         edtFullName = (EditText)findViewById(R.id.edtname);
@@ -101,28 +134,33 @@ public class DetailViewActivity extends AppCompatActivity {
         if(mContact.getmProfileImage().equals(""))
 
         {
-            profileImage.setImageDrawable(ContextCompat.getDrawable(DetailViewActivity.this,R.drawable.profile_icon));
+            toolbarImage.setImageDrawable(ContextCompat.getDrawable(DetailViewActivity.this,R.drawable.profile_icon));
         }
         else {
             File file = new File(Environment.getExternalStorageDirectory() + "/ContactProfileImages/" + mContact.getmProfileImage());
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getPath(), bmOptions);
+            Bitmap bitmap1 = BitmapFactory.decodeFile(file.getPath(), bmOptions);
 
-            profileImage.setImageBitmap(bitmap);
+            toolbarImage.setImageBitmap(bitmap1);
         }
 
     }
 
 
-    private void toolbarTextAppernce() {
-        collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
-        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.expandedappbar);
-    }
+   // private void toolbarTextAppernce() {
+    //    collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
+    //    collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.expandedappbar);
+  //  }
     public void onBackPressed()
     {
         super.onBackPressed();
         Intent i = new Intent(DetailViewActivity.this,MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
+    }
+    private void setAppBarOffset(int offsetPx) {
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        behavior.onNestedPreScroll(coordinatorLayout, appBarLayout, null, 0, offsetPx, new int[]{0, 0});
     }
 }

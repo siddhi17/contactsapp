@@ -15,10 +15,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.siddhi.contactsapp.AsyncTasks.LoginUserAsyncTask;
+import com.example.siddhi.contactsapp.AsyncTasks.SendMultipleInvitesAsyncTask;
 import com.example.siddhi.contactsapp.R;
 import com.example.siddhi.contactsapp.helper.MyFirebaseInstanceIDService;
 import com.example.siddhi.contactsapp.helper.ReadContactsPrmission;
 import com.example.siddhi.contactsapp.helper.ReadPhoneStatePermission;
+import com.example.siddhi.contactsapp.helper.SendSmsPermission;
 import com.example.siddhi.contactsapp.helper.Utility;
 import com.example.siddhi.contactsapp.helper.Validation;
 
@@ -46,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
 
         boolean re = ReadContactsPrmission.checkPermission(LoginActivity.this);
 
-        boolean r = ReadPhoneStatePermission.checkPermission(LoginActivity.this);
+        boolean r = SendSmsPermission.checkPermission(LoginActivity.this);
 
         txtuserName = (EditText) findViewById(R.id.edtusername);
         txtpasswordName = (EditText) findViewById(R.id.edtpass);

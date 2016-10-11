@@ -115,7 +115,7 @@ public class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.MyViewHold
 
         Invitation invitation = new Invitation();
 
-            SharedPreferences sharedpreferences = mContext.getSharedPreferences("UserId", Context.MODE_PRIVATE);
+            SharedPreferences sharedpreferences = mContext.getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
 
             String mUserId = sharedpreferences.getString("userId", "");
 
