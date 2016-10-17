@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.siddhi.contactsapp.AsyncTasks.LoginUserAsyncTask;
 import com.example.siddhi.contactsapp.database.DatabaseHelper;
 import com.example.siddhi.contactsapp.helper.Utility;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 /**
  * Created by Siddhi on 9/18/2016.
@@ -16,7 +17,7 @@ import com.example.siddhi.contactsapp.helper.Utility;
 public class StartUpActivity extends AppCompatActivity {
 
     private SharedPreferences sharedpreferences;
-    private String userUsername;;
+    private String userUsername,refreshedToken;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +26,11 @@ public class StartUpActivity extends AppCompatActivity {
         DatabaseHelper db = new DatabaseHelper(this);
         db.createDatabase();
 
+        refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
         sharedpreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
 
         userUsername = sharedpreferences.getString("UserUsername","");
-
 
             if (userUsername.equals("")) {
 

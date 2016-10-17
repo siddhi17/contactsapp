@@ -44,8 +44,8 @@ public class CreateLinkedContactAsyncTask extends AsyncTask<String, Void, JSONOb
             api = ServiceUrl.getBaseUrl() + "createLinkedContact.php";
             //build JsonObject
             jsonParams = new JSONObject();
-            String user_id = this.user_id; // params[0] is username
-            String linked_contact_id = this.linkedContact_id; // params[1] is password
+            String user_id = this.user_id;
+            String linked_contact_id = this.linkedContact_id;
             jsonParams.put("user_id", user_id);
             jsonParams.put("linked_contact_id", linked_contact_id);
 

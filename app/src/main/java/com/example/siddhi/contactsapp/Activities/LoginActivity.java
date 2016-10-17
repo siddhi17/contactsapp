@@ -23,6 +23,7 @@ import com.example.siddhi.contactsapp.helper.ReadPhoneStatePermission;
 import com.example.siddhi.contactsapp.helper.SendSmsPermission;
 import com.example.siddhi.contactsapp.helper.Utility;
 import com.example.siddhi.contactsapp.helper.Validation;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnsignUp;
     private Button btnsignIn;
     private Button btnforgotPassword;
+    private String refreshedToken;
 
 
     @Override

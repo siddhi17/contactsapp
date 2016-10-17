@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class GetInvitationsAsyncTask  extends AsyncTask<String, Void, JSONObject> {
     String api;
-    String userId;
+    String mMobileNo,mUsername;
     JSONObject jsonParams;
     private List<Invitation> invitationList = new ArrayList<Invitation>();
     public JSONArray invitationListArray;
@@ -28,11 +28,12 @@ public class GetInvitationsAsyncTask  extends AsyncTask<String, Void, JSONObject
     private Context mContext;
     private ProgressDialog progressDialog;
 
-    public GetInvitationsAsyncTask(GetInvitationsCallBack getInvitationsCallBack, Context context, String userId) {
+    public GetInvitationsAsyncTask(GetInvitationsCallBack getInvitationsCallBack, Context context,String mobileno,String username) {
         this.mContext = context;
-        this.userId = userId;
         this.getInvitationsCallBack=getInvitationsCallBack;
         this.progressDialog = new ProgressDialog(mContext);
+        this.mMobileNo = mobileno;
+        this.mUsername = username;
     }
     public interface GetInvitationsCallBack {
         void doPostExecute(JSONArray response) throws JSONException;
@@ -53,9 +54,8 @@ public class GetInvitationsAsyncTask  extends AsyncTask<String, Void, JSONObject
             api = ServiceUrl.getBaseUrl() + "getInvitations.php";
             jsonParams = new JSONObject();
 
-            String user_id = this.userId;
-
-            jsonParams.put("sender_id", user_id); // params[0] is userid
+            jsonParams.put("mobile_no",mMobileNo);
+            jsonParams.put("username",mUsername);
 
             ServerRequest request = new ServerRequest(api, jsonParams);
             return request.sendRequest();

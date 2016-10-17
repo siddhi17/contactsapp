@@ -98,6 +98,15 @@ public class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.MyViewHold
 
         }
     }
+    public void removeSelection( boolean isSelected ) {
+        for( Contact contact : contactArrayList ) {
+            contact.setSelected(isSelected);
+
+        }
+        invitationArrayList.clear();
+        Log.e("inviteList",String.valueOf(invitationArrayList.size()));
+        notifyDataSetChanged(); // OR you can use notifyItemRangeChanged - which ever suits your needs
+    }
 
 
     public void toggleContactsSelection( boolean isSelected ) {
@@ -126,8 +135,6 @@ public class InviteAdapter extends RecyclerView.Adapter<InviteAdapter.MyViewHold
             invitation.setDate(date);
             invitation.setInvitee_no(contact.getmMobileNo());
             invitation.setStatus("0");
-            invitation.setUser_name(contact.getmFullName());
-            invitation.setContact_id(contact.getContactId());
 
             invitationArrayList.add(invitation);
 

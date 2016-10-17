@@ -1,7 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single"
-        >
+    <group android:checkableBehavior="single">
 
         <item
             android:id="@+id/nav_menu_contacts"
@@ -14,19 +13,21 @@
             android:id="@+id/nav_menu_settings"
             android:icon="@drawable/ic_settings_white_48dp"
             android:title="@string/action_settings"
-            android:textColor="#ff0731" />
+            android:textColor="#f7fff3" />
 
         <item
-            android:id="@+id/nav_invie"
+            android:id="@+id/nav_invite"
             android:title="Invite"
-            android:textColor="#ff0731" />
+            android:icon="@drawable/ic_receipt_white_48dp"
+            android:textColor="#f7fff3" />
 
         <item
             android:id="@+id/nav_log_out"
-            android:title="Log out">
+            android:icon="@drawable/ic_power_settings_new_white_48dp"
+            android:title="Log out"
+            android:textColor="#f7fff3" >
 
         </item>
-
 
     </group>
 

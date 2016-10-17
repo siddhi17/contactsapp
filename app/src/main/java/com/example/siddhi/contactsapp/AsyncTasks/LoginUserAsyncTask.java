@@ -44,6 +44,7 @@ public class LoginUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
     private ProgressDialog progressDialog;
     private static String KEY_SUCCESS = "user authenticated successfully";
     private Boolean firstTimeLogin = false;
+    private SharedPreferences sharedpreferences;
 
     public LoginUserAsyncTask(Context context, String userName, String password) {
         this.mContext = context;
@@ -104,7 +105,6 @@ public class LoginUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
                     String homeAddress = userJson.getString("home_address");
                     String workAddress = userJson.getString("work_address");
                     String work_phone = userJson.getString("work_phone");
-                    String device_id = userJson.getString("device_id");
                     String email_id = userJson.getString("email_id");
                     String pass = userJson.getString("password");
                     String full_name = userJson.getString("full_name");
@@ -158,7 +158,6 @@ public class LoginUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
                     user.setmEmailId(email_id);
                     user.setmWorkPhone(work_phone);
                     user.setmWorkAddress(workAddress);
-                    user.setmDeviceId(device_id);
                     user.setmJobTitle(job_title);
 
                     firstTimeLogin = true;
@@ -173,7 +172,6 @@ public class LoginUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
                     editor.putString("pass",pass);
                     editor.putString("workPhone",work_phone);
                     editor.putString("workAddress",workAddress);
-                    editor.putString("deviceId",device_id);
                     editor.putString("homeAddress",homeAddress);
                     editor.putString("fullName",full_name);
                     editor.putString("profileImage",profileImage);
@@ -196,7 +194,7 @@ public class LoginUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
 
                 } else {
 
-                    Toast.makeText(mContext, "Not authenticated user.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Unable to login.", Toast.LENGTH_LONG).show();
                     progressDialog.dismiss();
                     if (count >= 3) {
                         Toast.makeText(mContext, "Sorry you have exceeded login limit.Please try again later…..!!!!", Toast.LENGTH_LONG).show();
@@ -206,6 +204,8 @@ public class LoginUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                Toast.makeText(mContext,"Unable to login.", Toast.LENGTH_LONG).show();
+
             }
         }
     }

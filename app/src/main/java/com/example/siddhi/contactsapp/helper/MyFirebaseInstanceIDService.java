@@ -31,7 +31,7 @@ import org.json.JSONObject;
 import java.io.File;
 
 
-public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService implements UpdateUserAsyncTask.UpdateUserCallBack{
+public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService{
 
     private static final String TAG = "MyFirebaseIIDService";
 
@@ -59,7 +59,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService imple
 
             SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("UserProfile",getApplicationContext().MODE_PRIVATE).edit();
 
-            editor.putString("token",token);
+            editor.putString("deviceId",token);
 
             editor.commit();
 
@@ -111,8 +111,5 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService imple
         }*/
     }
 
-    @Override
-    public void doPostExecute(JSONObject response, Boolean update) throws JSONException {
-    }
 
 }

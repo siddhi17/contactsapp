@@ -66,6 +66,7 @@ import com.example.siddhi.contactsapp.helper.ServiceUrl;
 import com.example.siddhi.contactsapp.helper.SquareImageView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
     public static final String REGISTRATION_COMPLETE = "registrationComplete";
     public static final String PUSH_NOTIFICATION = "pushNotification";
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-
+    public static final String ACTION_ACCEPT = "Accept";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,13 +120,25 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
      //   Intent intent=new Intent(MainActivity.this,MyFirebaseInstanceIDService.class);
       //  startService(intent);
 
-        refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(REGISTRATION_COMPLETE));
+
+        // register new push message receiver
+        // by doing this, the activity will be notified each time a new message arrives
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(PUSH_NOTIFICATION));
+
+        // clear the notification area when the app is opened
+        NotificationUtils.clearNotifications(getApplicationContext());
+
 
         sharedpreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
 
         mUserId = sharedpreferences.getString("userId", "");
 
         firstTimeLogin = sharedpreferences.getBoolean("login", false);
+
+        refreshedToken = sharedpreferences.getString("deviceId","");
 
         setupView();
 
@@ -205,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
                         break;
 
-                    case R.id.nav_invie:
+                    case R.id.nav_invite:
 
                         startActivity(new Intent(MainActivity.this, InviteContactsActivity.class));
 
@@ -397,16 +410,9 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
     public void onResume()
     {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(REGISTRATION_COMPLETE));
 
-        // register new push message receiver
-        // by doing this, the activity will be notified each time a new message arrives
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(PUSH_NOTIFICATION));
+        contactList.clear();
 
-        // clear the notification area when the app is opened
-        NotificationUtils.clearNotifications(getApplicationContext());
 
 
         if(!firstTimeLogin)
@@ -422,7 +428,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
             firstTimeLogin = false;
 
-            SharedPreferences.Editor editor = getSharedPreferences("InitialLogin",MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = getSharedPreferences("UserProfile",MODE_PRIVATE).edit();
             editor.putBoolean("login",firstTimeLogin);
             editor.commit();
         }
@@ -537,7 +543,6 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                         String profileImage = jsonUser.getString("profile_image");
                         String mobileNo = jsonUser.getString("mobile_no");
                         String emailId = jsonUser.getString("email_id");
-                        String deviceId = jsonUser.getString("device_id");
                         String fullName = jsonUser.getString("full_name");
                         String jobTitle = jsonUser.getString("job_title");
                         String homeAddress = jsonUser.getString("home_address");
@@ -549,7 +554,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                         mUser.setmMobileNo(mobileNo);
                         mUser.setmProfileImage(profileImage);
                         mUser.setmUserName(userName);
-                        mUser.setmDeviceId(deviceId);
+                        mUser.setmDeviceId(refreshedToken);
                         mUser.setmPassword(password);
                         mUser.setmEmailId(emailId);
                         mUser.setmFullName(fullName);
@@ -599,4 +604,5 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
 
     }
+
 }

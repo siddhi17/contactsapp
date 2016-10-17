@@ -39,7 +39,13 @@
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Activities.DetailViewActivity" />
+        <activity android:name=".Activities.DetailViewActivity" >
+        <intent-filter>
+            <action android:name="OPEN_ACTIVITY_2" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+
+        </activity>
         <activity
             android:name=".Activities.ProfileActivity"
             android:windowSoftInputMode="stateHidden" />
@@ -69,7 +75,12 @@
         <activity
             android:name=".Activities.PendingInvitesActivity"
             android:label="@string/title_activity_pending_invites"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme" >
+        <intent-filter>
+            <action android:name="OPEN_ACTIVITY_1" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+        </activity>>
 
         <receiver android:name=".helper.MessageService$SmsSentReceiver"></receiver>
         <receiver android:name=".helper.MessageService$SmsDeliveredReceiver" />

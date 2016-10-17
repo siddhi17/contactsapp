@@ -85,7 +85,7 @@ public class GetUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
 
 
                 } else {
-                    Toast.makeText(mContext, "Success", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Unable to get information.", Toast.LENGTH_LONG).show();
                     progressDialog.dismiss();
                     Intent intent = new Intent(mContext, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     mContext.startActivity(intent);

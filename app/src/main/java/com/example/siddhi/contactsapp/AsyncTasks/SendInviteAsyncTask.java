@@ -5,41 +5,41 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.example.siddhi.contactsapp.helper.Excpetion2JSON;
+import com.example.siddhi.contactsapp.helper.Map2JSON;
 import com.example.siddhi.contactsapp.helper.ServerRequest;
 import com.example.siddhi.contactsapp.helper.ServiceUrl;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 /**
  * Created by Siddhi on 10/11/2016.
  */
-public class SendInviteAsyncTask  extends AsyncTask<String, Void, JSONObject> {
+public class SendInviteAsyncTask  extends AsyncTask<Map<String, String>, Void, JSONObject> {
 
     String api;
     JSONObject jsonParams;
-    String user_name;
     private Context mContext;
     private static String KEY_SUCCESS = "Invitation sent.";
 
 
-    public SendInviteAsyncTask(Context context, String user_name) {
+    public SendInviteAsyncTask(Context context) {
         this.mContext = context;
-        this.user_name = user_name;
-
     }
 
     @Override
-    protected JSONObject doInBackground(String... params) {
+    protected JSONObject doInBackground(Map<String, String>... params) {
         try {
 
             //Url
             api = ServiceUrl.getBaseUrl() + "sendInvite.php";
             //build JsonObject
             jsonParams = new JSONObject();
-            String user_name = this.user_name; // params[0] is username
+            Map2JSON mjs = new Map2JSON();
 
-            jsonParams.put("user_name", user_name);
+            JSONObject jsonParams = mjs.getJSON(params[0]);
 
             ServerRequest request = new ServerRequest(api, jsonParams);
             return request.sendRequest();
@@ -60,12 +60,12 @@ public class SendInviteAsyncTask  extends AsyncTask<String, Void, JSONObject> {
             try {
 
                 if (response.getString("message").equalsIgnoreCase(KEY_SUCCESS)) {
-                    Toast.makeText(mContext, "Invitation Accepted.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Invitation sent.", Toast.LENGTH_LONG).show();
 
 
                 } else {
 
-                    Toast.makeText(mContext, "Could not accept Invitation.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Could not send Invitation.", Toast.LENGTH_LONG).show();
 
                 }
             }

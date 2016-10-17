@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -22,17 +23,24 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.siddhi.contactsapp.Adapter.ContactAdapter;
 import com.example.siddhi.contactsapp.Adapter.InviteAdapter;
+import com.example.siddhi.contactsapp.AsyncTasks.SendInviteAsyncTask;
 import com.example.siddhi.contactsapp.AsyncTasks.SendMultipleInvitesAsyncTask;
 import com.example.siddhi.contactsapp.Contact;
 import com.example.siddhi.contactsapp.Invitation;
@@ -49,11 +57,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 public class InviteContactsActivity extends AppCompatActivity implements SendMultipleInvitesAsyncTask.SendMultipleInvitesCallBack {
 
@@ -62,6 +74,7 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
     private ArrayList<Contact> mContactList;
     private ContactTableHelper mContactDb;
     private ArrayList<Invitation> invitationArrayList;
+    private SharedPreferences sharedpreferences;
     private MessageService.SmsDeliveredReceiver smsDeliveredReceiver;
     private MessageService.SmsSentReceiver smsSentReceiver;
     private final static int SEND_SMS = 90, RECEIVE_SMS = 111;
@@ -71,7 +84,10 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
 
     private static final String PHONE_NUMBER = ContactsContract.CommonDataKinds.Phone.NUMBER;
     private static final String PHONE_CONTACT_ID = ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
-    private boolean selectAll;
+    private boolean checkSelectAll;
+    private View positiveAction;
+    private String mUserId,mUsername;
+    private EditText usernameInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +99,11 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
         final TextView title = (TextView) findViewById(R.id.toolbar_title);
 
         title.setText("Invite Contacts");
+
+        sharedpreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
+
+
+        mUserId = sharedpreferences.getString("userId", "");
 
 
         if (toolbar != null) {
@@ -105,33 +126,94 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
         final ImageView menu = (ImageView) findViewById(R.id.imageMenu);
 
         menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                                    @Override
+                                    public void onClick(View view) {
 
-                PopupMenu popup = new PopupMenu(InviteContactsActivity.this, menu);
+                                        PopupMenu popup = new PopupMenu(InviteContactsActivity.this, menu);
 
-                popup.getMenuInflater().inflate(R.menu.pop_up_menu, popup.getMenu());
+                                        popup.getMenuInflater().inflate(R.menu.pop_up_menu, popup.getMenu());
+                                        popup.show();
 
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
+                                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                            public boolean onMenuItemClick(MenuItem item) {
 
-                        switch (item.getItemId()) {
-                            case R.id.selectAll:
-                                mAdapter.toggleContactsSelection(true);
-                                return true;
-                            case R.id.inviteByUserName:
+                                                MaterialDialog dialog;
 
-                                startActivity(new Intent(InviteContactsActivity.this,InviteByUsername.class));
+                                                switch (item.getItemId()) {
+                                                    case R.id.selectAll:
 
-                                return true;
 
-                        }
-                        return true;
-                    }
-                });
+                                                        if(!checkSelectAll) {
+                                                            mAdapter.toggleContactsSelection(true);
+                                                            checkSelectAll = true;
+                                                        }
 
-                popup.show();
-            }
+                                                        else {
+
+                                                            mAdapter.removeSelection(false);
+                                                            checkSelectAll = false;
+                                                        }
+
+                                                        return true;
+                                                    case R.id.inviteByUserName:
+
+                                                       dialog = new MaterialDialog.Builder(InviteContactsActivity.this)
+                                                                .customView(R.layout.invite_dialog, true)
+                                                                .positiveText("Send Invite")
+                                                                .negativeText(android.R.string.cancel)
+                                                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                                                    @Override
+                                                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                                                        mUsername = String.valueOf(usernameInput.getText().toString());
+                                                                        Toast.makeText(InviteContactsActivity.this, usernameInput.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                                                                        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm", Locale.ENGLISH);
+                                                                        String date = df.format(Calendar.getInstance().getTime());
+
+                                                                        HashMap<String, String> params = new HashMap<String, String>();
+
+                                                                        params.put("sender_id", mUserId);
+                                                                        params.put("status", "0");
+                                                                        params.put("date", date);
+                                                                        params.put("user_name", mUsername);
+
+                                                                        SendInviteAsyncTask sendInviteAsyncTask = new SendInviteAsyncTask(InviteContactsActivity.this);
+                                                                        sendInviteAsyncTask.execute(params);
+
+                                                                    }
+                                                                }).build();
+
+                                                        positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
+                                                        //noinspection ConstantConditions
+                                                        usernameInput = (EditText) dialog.getCustomView().findViewById(R.id.editUserName);
+
+                                                        usernameInput.addTextChangedListener(new TextWatcher() {
+                                                            @Override
+                                                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                                                            }
+
+                                                            @Override
+                                                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                                                positiveAction.setEnabled(s.toString().trim().length() > 0);
+                                                            }
+
+                                                            @Override
+                                                            public void afterTextChanged(Editable s) {
+                                                            }
+                                                        });
+
+                                                        dialog.show();
+                                                        positiveAction.setEnabled(false);
+
+                                                        return true;
+                                                }
+
+                                                return true;
+                                            }
+
+                                        });
+                                    }
         });
 
 
@@ -223,13 +305,13 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
 
                 if(SendSmsPermission.checkPermission(InviteContactsActivity.this)) {
 
-                    Intent serviceIntent = new Intent(this, MessageService.class);
+                /*    Intent serviceIntent = new Intent(this, MessageService.class);
                     serviceIntent.putStringArrayListExtra("numbers", numbers);
                     startService(serviceIntent);
                     IntentFilter filter = new IntentFilter();
                     this.registerReceiver(smsDeliveredReceiver, filter);
                     filter = new IntentFilter();
-                    this.registerReceiver(smsSentReceiver, filter);
+                    this.registerReceiver(smsSentReceiver, filter);*/
                 }
                 else {
                     boolean r = SendSmsPermission.checkPermission(InviteContactsActivity.this);

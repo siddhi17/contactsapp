@@ -83,7 +83,7 @@ public class DetailViewActivity extends AppCompatActivity {
             }
         });
 
-        if(mContact.getmFullName().equals("")) {
+        if(mContact.getmFullName().equals("") && mContact.getmFullName() != null) {
             collapsingToolbarLayout.setTitle("Contact");
         }
         else {
@@ -131,7 +131,7 @@ public class DetailViewActivity extends AppCompatActivity {
         edtWorkAddress.setText(mContact.getmWorkAddress());
         edtMobile.setText(mContact.getmMobileNo());
 
-        if(mContact.getmProfileImage().equals(""))
+        if(mContact.getmProfileImage().equals("") && mContact.getmProfileImage() != null)
 
         {
             toolbarImage.setImageDrawable(ContextCompat.getDrawable(DetailViewActivity.this,R.drawable.profile_icon));

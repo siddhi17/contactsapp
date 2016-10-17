@@ -5,11 +5,12 @@ package com.example.siddhi.contactsapp;
  */
 public class Invitation {
 
-    private String sender_id,date,invitee_no,status,user_name,profile_image,invitation_id,contact_id;
+    private String sender_id,date,invitee_no,status,user_name,profile_image,invitation_id,jobTitle,homeAddress,
+            workAddress,workPhone,emailId,fullName,mobileNo;
 
     public Invitation(){}
 
-    public Invitation(String sender_id, String date, String invitee_no, String status, String user_name,String invitation_id,String profile_image,String contact_id)
+    public Invitation(String sender_id, String date, String invitee_no, String status, String user_name,String invitation_id,String profile_image)
     {
         this.sender_id = sender_id;
         this.date = date;
@@ -18,15 +19,62 @@ public class Invitation {
         this.user_name = user_name;
         this.invitation_id = invitation_id;
         this.profile_image = profile_image;
-        this.contact_id = contact_id;
     }
 
-    public void setContact_id(String contact_id) {
-        this.contact_id = contact_id;
+    public String getMobileNo() {
+        return mobileNo;
     }
 
-    public String getContact_id() {
-        return contact_id;
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
+    }
+
+    public String getEmailId() {
+        return emailId;
+    }
+
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
+    }
+
+    public String getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setHomeAddress(String homeAddress) {
+        this.homeAddress = homeAddress;
+    }
+
+    public String getJobTitle() {
+        return jobTitle;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
+    }
+
+    public String getWorkAddress() {
+        return workAddress;
+    }
+
+    public void setWorkAddress(String workAddress) {
+        this.workAddress = workAddress;
+    }
+
+    public void setWorkPhone(String workPhone) {
+        this.workPhone = workPhone;
+    }
+
+    public String getWorkPhone() {
+        return workPhone;
     }
 
     public void setDate(String date) {

@@ -88,7 +88,7 @@ public class GetContactsAsyncTask extends AsyncTask<String, Void, JSONObject> {
                     progressDialog.dismiss();
                 }
                 else{
-                    Toast.makeText(mContext, "Unable to Fetch Contacts", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "No Internet connection.", Toast.LENGTH_LONG).show();
                     progressDialog.dismiss();
                 }
             }

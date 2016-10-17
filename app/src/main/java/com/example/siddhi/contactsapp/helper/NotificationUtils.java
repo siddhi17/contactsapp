@@ -36,6 +36,8 @@ public class NotificationUtils {
     private static String TAG = NotificationUtils.class.getSimpleName();
     public static final int NOTIFICATION_ID = 100;
     public static final int NOTIFICATION_ID_BIG_IMAGE = 101;
+    public static final String ACTION_ACCEPT = "Accept";
+    public static final String ACTION_REJECT = "Reject";
 
     private Context mContext;
 
@@ -68,8 +70,7 @@ public class NotificationUtils {
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 mContext);
 
-        final Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                + "://" + mContext.getPackageName() + "/raw/notification");
+        final Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         if (!TextUtils.isEmpty(imageUrl)) {
 
@@ -91,6 +92,12 @@ public class NotificationUtils {
 
 
     private void showSmallNotification(NotificationCompat.Builder mBuilder, int icon, String title, String message, String timeStamp, PendingIntent resultPendingIntent, Uri alarmSound) {
+
+        Intent yesReceive = new Intent();
+        yesReceive.setAction(ACTION_ACCEPT);
+        PendingIntent pendingIntentYes = PendingIntent.getBroadcast(mContext, 12345, yesReceive, PendingIntent.FLAG_UPDATE_CURRENT);
+       // mBuilder.addAction(R.drawable.accept_button, "Accept", pendingIntentYes);
+
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 

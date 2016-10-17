@@ -599,6 +599,8 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         String url = ServiceUrl.getBaseUrl() + ServiceUrl.getImageUserUrl() + imageprofile;
         Log.e("url", url);
 
+        new ImageUserTask(ProfileActivity.this,url,this).execute();
+
         SharedPreferences.Editor editor = ProfileActivity.this.getSharedPreferences("UserProfile", ProfileActivity.this.MODE_PRIVATE).edit();
         editor.putString("UserUsername", userName);
         editor.putString("userId", userId);
@@ -645,8 +647,6 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         mDb.updateUser(new User(userId,userName,password,mobileNo,emailId,imageprofile,fullName,
                 deviceId,jobTitle,homeAddress,workAddress,workPhone));
 
-
-        new ImageUserTask(ProfileActivity.this,url,this).execute();
 
         Intent i = new Intent(ProfileActivity.this,ProfileActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
