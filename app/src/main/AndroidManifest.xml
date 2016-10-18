@@ -52,8 +52,7 @@
         <activity
             android:name=".Activities.LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:theme="@style/AppTheme" />
         <activity android:name=".Activities.StartUpActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -69,8 +68,7 @@
         <activity
             android:name=".Activities.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:theme="@style/AppTheme"/>
         <activity android:name=".Activities.InviteContactsActivity" />
         <activity
             android:name=".Activities.PendingInvitesActivity"

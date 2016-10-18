@@ -1,7 +1,9 @@
 package com.example.siddhi.contactsapp.helper;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
@@ -13,6 +15,8 @@ import com.example.siddhi.contactsapp.Activities.MainActivity;
 import com.example.siddhi.contactsapp.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.List;
 
 /**
  * Created by Siddhi on 10/18/2016.
@@ -69,4 +73,5 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         notificationManager.notify(0, notificationBuilder.build());
     }
+
 }

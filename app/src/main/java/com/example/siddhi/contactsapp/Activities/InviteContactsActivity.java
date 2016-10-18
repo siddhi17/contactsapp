@@ -278,7 +278,7 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
                 JSONObject invitation = subObject1.getJSONObject("invitation");
 
                 String number = invitation.getString("invitee_no");
-                String num = number.replace(" ", "");
+                String num = number.trim().replaceAll(" ","");
                 numbers.add(num);
 
              /*  try {
@@ -305,13 +305,13 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
 
                 if(SendSmsPermission.checkPermission(InviteContactsActivity.this)) {
 
-                /*    Intent serviceIntent = new Intent(this, MessageService.class);
+                    Intent serviceIntent = new Intent(this, MessageService.class);
                     serviceIntent.putStringArrayListExtra("numbers", numbers);
                     startService(serviceIntent);
                     IntentFilter filter = new IntentFilter();
                     this.registerReceiver(smsDeliveredReceiver, filter);
                     filter = new IntentFilter();
-                    this.registerReceiver(smsSentReceiver, filter);*/
+                    this.registerReceiver(smsSentReceiver, filter);
                 }
                 else {
                     boolean r = SendSmsPermission.checkPermission(InviteContactsActivity.this);
@@ -450,7 +450,11 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
                     while (!phone.isAfterLast()) {
                         numberFieldColumnIndex = phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                         if (numberFieldColumnIndex > -1) {
-                            aContact.setmMobileNo(phone.getString(numberFieldColumnIndex));
+
+                            String number = phone.getString(numberFieldColumnIndex);
+                            String num = number.trim().replaceAll(" ","");
+
+                            aContact.setmMobileNo(num);
                             phone.moveToNext();
 
                             if(aContact.getmMobileNo() != null && !contactIds.contains(contactId)) {

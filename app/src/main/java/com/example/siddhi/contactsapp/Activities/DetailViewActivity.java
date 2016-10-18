@@ -48,7 +48,7 @@ public class DetailViewActivity extends AppCompatActivity implements GetUserAsyn
     private AppBarLayout appBarLayout;
     private int width;
     private String mUserId;
-    private Boolean mUpdateNotification;
+    private Boolean mUpdateNotification= false;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
 
@@ -61,23 +61,22 @@ public class DetailViewActivity extends AppCompatActivity implements GetUserAsyn
 
         setUI();
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-
-                mUserId = mIntent.getStringExtra("userId");
-                mUpdateNotification = mIntent.getBooleanExtra("updateNotification",false);
-
-            }
-        };
-
-
         mIntent = getIntent();
 
-        mUserId = mIntent.getStringExtra("userId");
-        mUpdateNotification = mIntent.getBooleanExtra("updateNotification",false);
+        Bundle data = getIntent().getExtras();
 
+        mUserId = data.getString("user_id");
+
+        String temp =  data.getString("updateNotification");
+
+        if(temp == null)
+        {
+            temp = "false";
+        }
+
+        if(temp.equals("true")) {
+            mUpdateNotification = true;
+        }
         if(!mUpdateNotification) {
 
             mContact = (Contact) mIntent.getSerializableExtra("contact");

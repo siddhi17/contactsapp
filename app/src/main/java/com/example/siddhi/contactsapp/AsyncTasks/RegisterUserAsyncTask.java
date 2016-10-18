@@ -123,7 +123,7 @@ public class RegisterUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
             String message = null;
             try {
                 if (response.getString("message").equalsIgnoreCase(KEY_SUCCESS)) {
-                    Toast.makeText(mContext, "success", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Welcome, you can now login.", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(mContext,LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     progressDialog.dismiss();
                     progressDialog = null;

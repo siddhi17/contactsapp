@@ -147,16 +147,11 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
 
             try{
                 jsonParams.put("profile_image",convertFileToString(this.mprofileImage));
-
                 System.out.println("convertFileToString(profile_image)" + convertFileToString(this.mprofileImage));
-
             }
             catch (Exception e)
             {
-
                 System.out.println("convertFileToString(profile_image)");
-
-
             }
 
             ServerRequest request = new ServerRequest(api, jsonParams);
@@ -175,6 +170,7 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
             String message = null;
             try {
                 if (response.getString("message").equalsIgnoreCase(KEY_SUCCESS1)) {
+
                     Toast.makeText(mContext, "success", Toast.LENGTH_LONG).show();
                  //   progressDialog.dismiss();
 
@@ -198,6 +194,5 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
         void doPostExecute(JSONObject response,Boolean update) throws JSONException;
     }
     // onPostExecute displays the results of the AsyncTask.
-
 
 }
