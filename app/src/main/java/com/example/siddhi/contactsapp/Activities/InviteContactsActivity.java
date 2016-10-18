@@ -278,8 +278,8 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
                 JSONObject invitation = subObject1.getJSONObject("invitation");
 
                 String number = invitation.getString("invitee_no");
-
-                numbers.add(number);
+                String num = number.replace(" ", "");
+                numbers.add(num);
 
              /*  try {
                     SmsManager sms = SmsManager.getDefault();

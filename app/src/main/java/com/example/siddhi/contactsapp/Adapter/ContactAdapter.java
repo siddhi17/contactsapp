@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.siddhi.contactsapp.Activities.DetailViewActivity;
+import com.example.siddhi.contactsapp.Activities.MainActivity;
 import com.example.siddhi.contactsapp.Contact;
 import com.example.siddhi.contactsapp.R;
 import com.example.siddhi.contactsapp.helper.ServiceUrl;
@@ -306,10 +307,15 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
                 @Override
                 public void onClick(View view) {
 
+                    ((MainActivity)mContext).finish();
+
                     Intent intent = new Intent(mContext,DetailViewActivity.class);
                     intent.putExtra("contact",contact);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     mContext.startActivity(intent);
+
+                    dialog.dismiss();
+
 
                 }
             });

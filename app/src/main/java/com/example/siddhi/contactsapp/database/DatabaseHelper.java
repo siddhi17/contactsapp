@@ -1,9 +1,12 @@
 package com.example.siddhi.contactsapp.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.siddhi.contactsapp.Contact;
+import com.example.siddhi.contactsapp.User;
 import com.example.siddhi.contactsapp.helper.Constants;
 
 
@@ -119,5 +122,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Create tables again
         //onCreate(db);
     }
+
 
 }

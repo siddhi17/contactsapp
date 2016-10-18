@@ -16,19 +16,10 @@
 
 package com.example.siddhi.contactsapp.helper;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-
-import com.example.siddhi.contactsapp.AsyncTasks.UpdateUserAsyncTask;
-import com.example.siddhi.contactsapp.R;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService{
@@ -55,19 +46,19 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService{
 
         // To implement: Only if user is registered, i.e. UserId is available in preference, update token on server.
 
-        if(!token.equals("")){
+        if (!token.equals("")) {
 
-            SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("UserProfile",getApplicationContext().MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = getApplicationContext().getSharedPreferences("UserProfile", getApplicationContext().MODE_PRIVATE).edit();
 
-            editor.putString("deviceId",token);
+            editor.putString("deviceId", token);
 
             editor.commit();
 
         }
 
 
-      //  if (!token.equals("")) {
-            // Implement code to update registration token to server
+        //  if (!token.equals("")) {
+        // Implement code to update registration token to server
 
        /*     SharedPreferences sharedPreferences1 = getBaseContext().getSharedPreferences("UserProfile",getApplicationContext().MODE_PRIVATE);
 
@@ -110,6 +101,5 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService{
 
         }*/
     }
-
 
 }

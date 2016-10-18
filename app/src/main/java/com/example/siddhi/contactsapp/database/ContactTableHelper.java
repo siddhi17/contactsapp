@@ -105,8 +105,6 @@ public class ContactTableHelper extends SQLiteOpenHelper{
 
                 Contact contact = new Contact();
 
-
-
                 contact.setContactId(cursor.getString(0));
                 contact.setmUserName(cursor.getString(1));
                 contact.setmMobileNo(cursor.getString(2));
@@ -125,5 +123,25 @@ public class ContactTableHelper extends SQLiteOpenHelper{
 
         return conList;
     }
+    public int updateContact(Contact contact) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_CONTACT_NAME, contact.getmUserName());
+        values.put(KEY_CONTACT_EMAIL_ID, contact.getmEmailId());
+        values.put(KEY_CONTACT_MOBILE_NO, contact.getmMobileNo());;
+        values.put(KEY_CONTACT_JOB_TITLE, contact.getmJobTitle());
+        values.put(KEY_CONTACT_HOME_ADDRESS, contact.getmHomeAddress());
+        values.put(KEY_CONTACT_WORK_ADDRESS, contact.getmWorkAddress());
+        values.put(KEY_CONTACT_WORK_PHONE, contact.getmWorkPhone());
+        values.put(KEY_CONTACT_PROFILE_IMAGE, contact.getmProfileImage());
+        values.put(KEY_CONTACT_FULL_NAME, contact.getmFullName());
+
+
+        // updating row
+        return db.update(CONTACT_TABLE, values, KEY_CONTACT_ID + " = ?",
+                new String[]{String.valueOf(contact.getContactId())});
+
+    }
 }

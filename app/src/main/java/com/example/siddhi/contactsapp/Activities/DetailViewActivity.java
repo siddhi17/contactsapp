@@ -1,5 +1,7 @@
 package com.example.siddhi.contactsapp.Activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,15 +19,23 @@ import android.view.Display;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.example.siddhi.contactsapp.AsyncTasks.GetUserAsyncTask;
 import com.example.siddhi.contactsapp.Contact;
 import com.example.siddhi.contactsapp.R;
+import com.example.siddhi.contactsapp.database.ContactTableHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 
 
 /**
  * Created by Siddhi on 9/30/2016.
  */
-public class DetailViewActivity extends AppCompatActivity {
+public class DetailViewActivity extends AppCompatActivity implements GetUserAsyncTask.GetUserCallBack{
 
     private ImageView profileImage;
     private EditText edtName,edtFullName,edtMobile,edtEmailId,edtPhone,edtJobTitle,edtWorkAddress,edtHomeAddress;
@@ -37,17 +47,56 @@ public class DetailViewActivity extends AppCompatActivity {
     final int version = android.os.Build.VERSION.SDK_INT;
     private AppBarLayout appBarLayout;
     private int width;
+    private String mUserId;
+    private Boolean mUpdateNotification;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewcontact);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         mContact = new Contact();
 
+        setUI();
+
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+
+                mUserId = mIntent.getStringExtra("userId");
+                mUpdateNotification = mIntent.getBooleanExtra("updateNotification",false);
+
+            }
+        };
+
+
         mIntent = getIntent();
 
-        mContact = (Contact)mIntent.getSerializableExtra("contact");
+        mUserId = mIntent.getStringExtra("userId");
+        mUpdateNotification = mIntent.getBooleanExtra("updateNotification",false);
+
+        if(!mUpdateNotification) {
+
+            mContact = (Contact) mIntent.getSerializableExtra("contact");
+
+            setContactDetails();
+        }
+
+        else {
+
+            GetUserAsyncTask getUserAsyncTask = new GetUserAsyncTask(DetailViewActivity.this,DetailViewActivity.this,mUserId);
+            getUserAsyncTask.execute(mUserId);
+
+        }
+
+    }
+
+    public void setContactDetails()
+    {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         final Display dWidth = getWindowManager().getDefaultDisplay();
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.cordinator_layout);
@@ -106,21 +155,12 @@ public class DetailViewActivity extends AppCompatActivity {
 
             });
         }
-       // toolbarTextAppernce();
+        // toolbarTextAppernce();
 
-       // ScrollableAppBar appBarLayout = (ScrollableAppBar) findViewById(R.id.appbar);
+        // ScrollableAppBar appBarLayout = (ScrollableAppBar) findViewById(R.id.appbar);
 
 //To give the effect "in the middle" of the image (like gif)
-      //  appBarLayout.collapseToolbar();
-
-        edtEmailId = (EditText)findViewById(R.id.edtemail);
-        edtFullName = (EditText)findViewById(R.id.edtname);
-        edtName = (EditText)findViewById(R.id.edtusername);
-        edtMobile = (EditText)findViewById(R.id.edtmobileno);
-        edtHomeAddress = (EditText)findViewById(R.id.edthomeaddress);
-        edtWorkAddress = (EditText)findViewById(R.id.edtworkaddress);
-        edtJobTitle = (EditText)findViewById(R.id.edtjodtitle);
-        edtPhone = (EditText)findViewById(R.id.edttelephoneno);
+        //  appBarLayout.collapseToolbar();
 
         edtPhone.setText(mContact.getmWorkPhone());
         edtEmailId.setText(mContact.getmEmailId());
@@ -132,7 +172,6 @@ public class DetailViewActivity extends AppCompatActivity {
         edtMobile.setText(mContact.getmMobileNo());
 
         if(mContact.getmProfileImage().equals("") && mContact.getmProfileImage() != null)
-
         {
             toolbarImage.setImageDrawable(ContextCompat.getDrawable(DetailViewActivity.this,R.drawable.profile_icon));
         }
@@ -143,9 +182,7 @@ public class DetailViewActivity extends AppCompatActivity {
 
             toolbarImage.setImageBitmap(bitmap1);
         }
-
     }
-
 
    // private void toolbarTextAppernce() {
     //    collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
@@ -163,4 +200,52 @@ public class DetailViewActivity extends AppCompatActivity {
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
         behavior.onNestedPreScroll(coordinatorLayout, appBarLayout, null, 0, offsetPx, new int[]{0, 0});
     }
+
+    public void setUI()
+    {
+
+        edtEmailId = (EditText)findViewById(R.id.edtemail);
+        edtFullName = (EditText)findViewById(R.id.edtname);
+        edtName = (EditText)findViewById(R.id.edtusername);
+        edtMobile = (EditText)findViewById(R.id.edtmobileno);
+        edtHomeAddress = (EditText)findViewById(R.id.edthomeaddress);
+        edtWorkAddress = (EditText)findViewById(R.id.edtworkaddress);
+        edtJobTitle = (EditText)findViewById(R.id.edtjodtitle);
+        edtPhone = (EditText)findViewById(R.id.edttelephoneno);
+
+    }
+
+    @Override
+    public void doPostExecute(JSONObject response) throws JSONException {
+        JSONObject userJs = response;
+
+        String userId = userJs.getString("user_id");
+        String userName = userJs.getString("user_name");
+        String profileImage = userJs.getString("profile_image");
+        String mobileNo = userJs.getString("mobile_no");
+        String emailId = userJs.getString("email_id");
+        String fullName = userJs.getString("full_name");
+        String jobTitle = userJs.getString("job_title");
+        String homeAddress = userJs.getString("home_address");
+        String workPhone = userJs.getString("work_phone");
+        String workAddress = userJs.getString("work_address");
+
+        mContact.setmEmailId(emailId);
+        mContact.setmMobileNo(mobileNo);
+        mContact.setContactId(userId);
+        mContact.setmProfileImage(profileImage);
+        mContact.setmFullName(fullName);
+        mContact.setmUserName(userName);
+        mContact.setmHomeAddress(homeAddress);
+        mContact.setmJobTitle(jobTitle);
+        mContact.setmWorkAddress(workAddress);
+        mContact.setmWorkPhone(workPhone);
+
+        setContactDetails();
+
+        ContactTableHelper db = new ContactTableHelper(DetailViewActivity.this);
+        db.updateContact(mContact);
+
+    }
+
 }

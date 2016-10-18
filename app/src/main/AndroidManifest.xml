@@ -23,17 +23,17 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Activities.MainActivity" />
 
-        <service android:name=".helper.MyFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
         <service android:name=".helper.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
+        <service
+            android:name=".helper.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
         <activity
             android:name=".Activities.RegisterActivity"
             android:label="@string/title_activity_main2"
@@ -80,7 +80,7 @@
             <action android:name="OPEN_ACTIVITY_1" />
             <category android:name="android.intent.category.DEFAULT" />
         </intent-filter>
-        </activity>>
+        </activity>
 
         <receiver android:name=".helper.MessageService$SmsSentReceiver"></receiver>
         <receiver android:name=".helper.MessageService$SmsDeliveredReceiver" />
