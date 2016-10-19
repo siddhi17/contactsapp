@@ -10,14 +10,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -32,6 +35,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -54,6 +58,7 @@ import com.example.siddhi.contactsapp.Contact;
 import com.example.siddhi.contactsapp.R;
 import com.example.siddhi.contactsapp.User;
 import com.example.siddhi.contactsapp.database.ContactTableHelper;
+import com.example.siddhi.contactsapp.database.DatabaseHelper;
 import com.example.siddhi.contactsapp.database.UserTableHelper;
 import com.example.siddhi.contactsapp.helper.DividerItemDecoration;
 import com.example.siddhi.contactsapp.helper.Excpetion2JSON;
@@ -64,6 +69,7 @@ import com.example.siddhi.contactsapp.helper.RoundedImageView;
 import com.example.siddhi.contactsapp.helper.ServerRequest;
 import com.example.siddhi.contactsapp.helper.ServiceUrl;
 import com.example.siddhi.contactsapp.helper.SquareImageView;
+import com.example.siddhi.contactsapp.helper.Utility;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -74,10 +80,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -110,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
     public static final String PUSH_NOTIFICATION = "pushNotification";
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     public static final String ACTION_ACCEPT = "Accept";
+    private static final String USER_TABLE = "userTable";
+    private static final String CONTACT_TABLE = "contactTable";
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 111;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
      //   Intent intent=new Intent(MainActivity.this,MyFirebaseInstanceIDService.class);
       //  startService(intent);
+        boolean result = Utility.checkAndRequestPermissions(MainActivity.this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(REGISTRATION_COMPLETE));
@@ -130,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
         // clear the notification area when the app is opened
         NotificationUtils.clearNotifications(getApplicationContext());
+
 
 
         sharedpreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
@@ -162,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                 public void onClick(View v) {
                     drawerLayout.closeDrawers();
                     Intent Intent = new Intent(MainActivity.this, ProfileActivity.class);
+                    Intent.putExtra("user", mUser);
                     Intent.putExtra("url", url);
                     startActivity(Intent);
                 }
@@ -204,12 +220,22 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
                     case R.id.nav_log_out:
 
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        SharedPreferences pref = getSharedPreferences("UserProfile",MODE_PRIVATE);
 
-                        editor.remove("UserProfile");
-
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.clear();
                         editor.commit();
 
+
+                        // db.delete(String tableName, String whereClause, String[] whereArgs);
+                        // If whereClause is null, it will delete all rows.
+
+                        DatabaseHelper helper = new DatabaseHelper(MainActivity.this);
+
+                        SQLiteDatabase db = helper.getWritableDatabase(); // helper is object extends SQLiteOpenHelper
+                        db.delete(USER_TABLE, null, null);
+                        db.delete(CONTACT_TABLE, null, null);
+                        db.close();
 
                         finish();
                         Intent i = new Intent(MainActivity.this, LoginActivity.class);
@@ -413,14 +439,14 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
         contactList.clear();
 
-
-
         if(!firstTimeLogin)
         {
             contactList.clear();
             contactList = contactDb.getAllContacts();
             mUser = mDb.getUser(mUserId);
 
+            txtuserName.setText(mUser.getmUserName());
+            txtmobile.setText(mUser.getmMobileNo());
         }
         else {
             new GetUserAsyncTask(mUserId).execute(mUserId);
@@ -462,33 +488,42 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_CALL: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            case REQUEST_ID_MULTIPLE_PERMISSIONS:
+            {
+                Map<String, Integer> perms = new HashMap<String, Integer>();
+                // Initial
+                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.READ_CONTACTS, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.SEND_SMS, PackageManager.PERMISSION_GRANTED);
+                // Fill with results
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
 
-                    try {
-
-                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"));
-                        startActivity(intent);
-                    } catch (SecurityException e) {
-
-                    }
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
+                if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    // All Permissions Granted
 
                 } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    // Permission Denied
+                    Toast.makeText(MainActivity.this, "Some Permission are Denied", Toast.LENGTH_SHORT)
+                            .show();
                 }
-                return;
+
+//                Toast.makeText(RegisterActivity.this, "Some Permission are Denied", Toast.LENGTH_SHORT).show();
+
             }
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
+
 
     public class GetUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
         String api;
@@ -579,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                         txtuserName.setText(mUser.getmUserName());
                         txtmobile.setText(mUser.getmMobileNo());
 
-                        new UpdateUserAsyncTask(MainActivity.this,MainActivity.this, userId, fullName, userName, password, mobileNo, emailId,refreshedToken,image, workAddress, workPhone, homeAddress, jobTitle).execute();
+                        new UpdateUserAsyncTask(MainActivity.this, userId, fullName, userName, password, mobileNo, emailId,refreshedToken,image, workAddress, workPhone, homeAddress, jobTitle).execute();
 
                     } else {
                         Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_LONG).show();
@@ -600,9 +635,144 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
     public void doPostExecute(JSONObject response, Boolean update) throws JSONException {
 
 
-
-
-
     }
+    public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
+        String api;
+        JSONObject jsonParams;
+        String muserName;
+        String mfullName;
+        String mpassword;
+        String mmobileNo;
+        String memailId;
+        String mdeviceId;
+        String muserId;
+        String mstatus;
+        String mjobTitle ;
+        String mworkAddress;
+        String mworkPhone ;
+        String mhomeAddress;
+        File mprofileImage;
+        private String KEY_SUCCESS1 = "User Updated Successfully.";
+        Bitmap result;
+        private Context mContext;
 
+        public UpdateUserAsyncTask(Context context, String userId) {
+            this.mContext = context;
+
+            this.muserId = userId;
+
+        }
+
+        public UpdateUserAsyncTask(Context context, String userId, String fullName, String userName, String password, String mobileNo, String emailId, String deviceId, File profileImage, String workAddress, String workPhone, String homeAddress, String jobTitle) {
+            this.mContext = context;
+            this.muserName = userName;
+            this.mpassword = password;
+            this.mfullName = fullName;
+            this.mmobileNo = mobileNo;
+            this.memailId = emailId;
+            this.mdeviceId = deviceId;
+            this.mprofileImage = profileImage;
+            this.mjobTitle = jobTitle;
+            this.mworkAddress = workAddress;
+            this.mworkPhone = workPhone ;
+            this.mhomeAddress = homeAddress;
+            this.muserId = userId;
+            this.result = result;
+        }
+
+        private String convertFileToString(File profileImage) throws IOException {
+
+            Bitmap bm = BitmapFactory.decodeFile(this.mprofileImage.getPath());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] b = baos.toByteArray();
+
+            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+            return encodedImage;}
+
+
+        private boolean hasImage(@NonNull CircleImageView view) {
+            Drawable drawable = view.getDrawable();
+            boolean hasImage = (drawable != null);
+
+            if (hasImage && (drawable instanceof BitmapDrawable)) {
+                hasImage = ((BitmapDrawable)drawable).getBitmap() != null;
+            }
+
+            return hasImage;
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            try {
+                //url
+                api = ServiceUrl.getBaseUrl() + ServiceUrl.getUpdateUserUrl();
+
+                // build jsonObject
+                jsonParams = new JSONObject();
+
+                String userId = this.muserId;  // params[0] is userid
+                String userName = this.muserName;  // params[1] is username
+                String password = this.mpassword; // params[2] is password
+                String deviceId = this.mdeviceId; // params[3] is deviceid
+                String mobileNo = this.mmobileNo; // params[4] is mobile
+                String emailId = this.memailId;  // params[5] is emailid
+                String fullName = this.mfullName; // params[7] is fullname
+                String jobTitle = this.mjobTitle;  // params[8] is jobtitle
+                String workAddress = this.mworkAddress; // params[9] is workaddress
+                String workPhone = this.mworkPhone ;  // params[10] is workphone
+                String homeAddress = this.mhomeAddress; // params[11] is homeaddress
+
+                jsonParams.put("user_id", userId);
+                jsonParams.put("user_name", userName);
+                jsonParams.put("password", password);
+                jsonParams.put("mobile_no", mobileNo);
+                jsonParams.put("email_id", emailId);
+                jsonParams.put("device_id", deviceId);
+                jsonParams.put("full_name", fullName);
+                jsonParams.put("job_title", jobTitle);
+                jsonParams.put("work_address", workAddress);
+                jsonParams.put("work_phone", workPhone);
+                jsonParams.put("home_address", homeAddress);
+
+                try{
+                    jsonParams.put("profile_image",convertFileToString(this.mprofileImage));
+                    System.out.println("convertFileToString(profile_image)" + convertFileToString(this.mprofileImage));
+                }
+                catch (Exception e)
+                {
+                    System.out.println("convertFileToString(profile_image)");
+                }
+
+                ServerRequest request = new ServerRequest(api, jsonParams);
+                return request.sendRequest();
+
+            } catch (JSONException je) {
+                return Excpetion2JSON.getJSON(je);
+            }
+        }  //end of doInBackground
+
+        @Override
+        protected void onPostExecute(JSONObject response) {
+            super.onPostExecute(response);
+
+            if (response.has("message")) {
+                String message = null;
+                try {
+                    if (response.getString("message").equalsIgnoreCase(KEY_SUCCESS1)) {
+
+
+
+                    } else {
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+
+            }
+        }
+    }
 }

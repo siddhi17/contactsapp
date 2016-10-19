@@ -1,5 +1,6 @@
 package com.example.siddhi.contactsapp.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -49,19 +50,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTask.GetUserCallBack,UpdateUserAsyncTask.UpdateUserCallBack,ImageUserTask.ImageServerCallBack{
+public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyncTask.UpdateUserCallBack,ImageUserTask.ImageServerCallBack{
     //Declaring the EditText object
     EditText edtfullName;
     EditText edtemail;
     EditText edtmobile;
     EditText edtPassword;
     EditText edtuserName;
-    EditText userId;
-
     EditText edtworkPhone;
     EditText edtworkAdd;
     EditText edthomeAdd;
@@ -83,9 +84,12 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
     private String mUserId,url;
     private String userChoosenTask;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
-    private Boolean mProfile,mUpdateUser,login;
+    private Boolean mProfile,mUpdateUser= false,login;
     private Intent mIntent;
     private UserTableHelper mDb;
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 111;
+    private boolean result;
+    private File image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,39 +102,13 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
 
         login = sharedpreferences.getBoolean("login",false);
 
-        mDb = new UserTableHelper(ProfileActivity.this);
+     //   mDb = new UserTableHelper(ProfileActivity.this);
 
-        mUser = mDb.getUser(mUserId);
+//        mUser = mDb.getUser(mUserId);
 
         // get reference to the views
+        setUI();
 
-        edtfullName = (EditText) findViewById(R.id.edtname);
-        edtuserName = (EditText) findViewById(R.id.edtusername);
-        edtuserName.setEnabled(false);
-        edtuserName.setKeyListener(null);
-        edtmobile = (EditText) findViewById(R.id.edtmobileno);
-        edtemail = (EditText) findViewById(R.id.edtemail);
-        edtPassword = (EditText) findViewById(R.id.edtpass);
-        edthomeAdd = (EditText) findViewById(R.id.edthomeaddress);
-        edtworkAdd = (EditText) findViewById(R.id.edtworkaddress);
-        edtworkPhone = (EditText) findViewById(R.id.edtwork_phone);
-        edtjobTitles = (EditText) findViewById(R.id.edtjodtitle);
-
-
-        profileImageView = (CircleImageView)findViewById(R.id.thumbnail);
-
-        File sd = Environment.getExternalStorageDirectory();
-        File image = new File(sd+"/Profile","Profile_Image.png");
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        Bitmap bitmap = BitmapFactory.decodeFile(image.getPath(),bmOptions);
-
-        if(bitmap != null) {
-
-            profileImageView.setImageBitmap(bitmap);
-        }
-        else {
-            profileImageView.setImageDrawable(ContextCompat.getDrawable(ProfileActivity.this,R.drawable.profile_icon));
-        }
 
       //  url = sharedpreferences.getString("url","");
 
@@ -146,7 +124,7 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         edthomeAdd.getBackground().mutate().setColorFilter(ContextCompat.getColor(this, R.color.yourColor1), PorterDuff.Mode.SRC_ATOP);
         edtjobTitles.getBackground().mutate().setColorFilter(ContextCompat.getColor(this, R.color.yourColor1), PorterDuff.Mode.SRC_ATOP);
 
-        setUI();
+
       //validation
         edtfullName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -334,8 +312,6 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
             case R.id.action_save_ec:
                 if (checkValidation()) {
                     updateuser();
-                    Snackbar snackbar = Snackbar.make(coordinatorLayout, "Profile information was saved", Snackbar.LENGTH_LONG);
-                    snackbar.show();
 
                 } else
                     Toast.makeText(ProfileActivity.this, "Form contains error", Toast.LENGTH_LONG).show();
@@ -445,16 +421,19 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int item) {
-                boolean result= Utility.checkPermission(ProfileActivity.this);
+            public void onClick(DialogInterface dialog, int item)
+            {
+
 
                 if (items[item].equals("Take Photo")) {
                     userChoosenTask ="Take Photo";
+                    result = Utility.checkAndRequestPermissions(ProfileActivity.this);
                     if(result)
                         cameraIntent();
 
                 } else if (items[item].equals("Choose from Library")) {
                     userChoosenTask ="Choose from Library";
+                    result = Utility.checkAndRequestPermissions(ProfileActivity.this);
                     if(result)
                         galleryIntent();
 
@@ -465,70 +444,6 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         });
         builder.show();
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(userChoosenTask.equals("Take Photo"))
-                        cameraIntent();
-                    else if(userChoosenTask.equals("Choose from Library"))
-                        galleryIntent();
-                } else {
-                    //code for deny
-                }
-                break;
-        }
-    }
-
-    public static Bitmap decodeSampledBitmapFromResource(String pathToFile,
-                                                         int reqWidth, int reqHeight)
-    {
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(pathToFile, options);
-
-        // Calculate inSampleSize
-      //  options.inSampleSize = calculateInSampleSize(options, reqWidth,
-        //        reqHeight);
-
-        Log.e("inSampleSize", "inSampleSize______________in storage"
-                + options.inSampleSize);
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(pathToFile, options);
-    }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options,
-                                            int reqWidth, int reqHeight)
-    {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth)
-        {
-
-            // Calculate ratios of height and width to requested height and
-            // width
-            final int heightRatio = Math.round((float) height
-                    / (float) reqHeight);
-            final int widthRatio = Math.round((float) width / (float) reqWidth);
-
-            // Choose the smallest ratio as inSampleSize value, this will
-            // guarantee
-            // a final image with both dimensions larger than or equal to the
-            // requested height and width.
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-
-        }
-
-        return inSampleSize;
-    }
-
 
     private void updateuser() {
 
@@ -555,7 +470,6 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
 
         String homeAddress = edthomeAdd.getText().toString();
 
-
         if (profileImage == null) {
 
 
@@ -565,7 +479,6 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         } else {
 
             new UpdateUserAsyncTask(this,ProfileActivity.this, userId, fullName, userName, password, mobileNo, emailId, deviceId, profileImage, workAddress, workPhone, homeAddress, jobTitle).execute();
-
 
             //  String profile = convertFileToString(profileImage);
         }
@@ -577,7 +490,7 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         }
         return false;
     }
-    @Override
+  /*  @Override
     public void doPostExecute(JSONObject response) throws JSONException {
         JSONObject userJs = response;
 
@@ -652,7 +565,7 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
-    }
+    }*/
     private String convertFileToString(File profileImage) throws IOException {
 
             Bitmap bm = BitmapFactory.decodeFile(profileImage.getPath());
@@ -683,6 +596,21 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         String profileImage = sharedpreferences.getString("profileImage","");
         String emailId = sharedpreferences.getString("emailId","");*/
 
+        edtfullName = (EditText) findViewById(R.id.edtname);
+        edtuserName = (EditText) findViewById(R.id.edtusername);
+        edtuserName.setEnabled(false);
+        edtuserName.setKeyListener(null);
+        edtmobile = (EditText) findViewById(R.id.edtmobileno);
+        edtemail = (EditText) findViewById(R.id.edtemail);
+        edtPassword = (EditText) findViewById(R.id.edtpass);
+        edthomeAdd = (EditText) findViewById(R.id.edthomeaddress);
+        edtworkAdd = (EditText) findViewById(R.id.edtworkaddress);
+        edtworkPhone = (EditText) findViewById(R.id.edtwork_phone);
+        edtjobTitles = (EditText) findViewById(R.id.edtjodtitle);
+
+        if(!mUpdateUser) {
+            mUser = (User) getIntent().getSerializableExtra("user");
+        }
 
         edtuserName.setText(mUser.getmUserName());
         edtfullName.setText(mUser.getmFullName());
@@ -694,6 +622,8 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         edtworkPhone.setText(mUser.getmWorkPhone());
         edtjobTitles.setText(mUser.getmJobTitle());
 
+        setImage();
+
     }
     @Override
     public void doPostExecute(JSONObject response,Boolean update) throws JSONException {
@@ -702,7 +632,19 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
 
         mUpdateUser = update;
 
-        new GetUserAsyncTask(this, ProfileActivity.this, mUserId).execute(mUserId);
+       /* Intent i = new Intent(ProfileActivity.this,ProfileActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(i);*/
+
+        mDb = new UserTableHelper(ProfileActivity.this);
+
+        mUser =  mDb.getUser(mUserId);
+
+
+        setUI();
+
+      //  new GetUserAsyncTask(this, ProfileActivity.this, mUserId).execute(mUserId);
 
     }
     @Override
@@ -720,5 +662,57 @@ public class ProfileActivity extends AppCompatActivity implements GetUserAsyncTa
         else {
             profileImageView.setImageDrawable(ContextCompat.getDrawable(ProfileActivity.this,R.drawable.profile_icon));
         }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_ID_MULTIPLE_PERMISSIONS:
+            {
+                Map<String, Integer> perms = new HashMap<String, Integer>();
+                // Initial
+                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+                // Fill with results
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
+
+                if(userChoosenTask.equals("Take Photo"))
+                {
+                    cameraIntent();
+                }
+                else if(userChoosenTask.equals("Choose from Library"))
+                {
+                    galleryIntent();
+                }
+
+//                Toast.makeText(RegisterActivity.this, "Some Permission are Denied", Toast.LENGTH_SHORT).show();
+
+            }
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    public void setImage()
+    {
+
+        profileImageView = (CircleImageView)findViewById(R.id.thumbnail);
+
+        File sd = Environment.getExternalStorageDirectory();
+        image = new File(sd+"/Profile","Profile_Image.png");
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(image.getPath(),bmOptions);
+
+        mSavedProfileImage = image;
+
+        if(bitmap != null) {
+
+            profileImageView.setImageBitmap(bitmap);
+        }
+        else {
+            profileImageView.setImageDrawable(ContextCompat.getDrawable(ProfileActivity.this,R.drawable.profile_icon));
+        }
+
     }
 }

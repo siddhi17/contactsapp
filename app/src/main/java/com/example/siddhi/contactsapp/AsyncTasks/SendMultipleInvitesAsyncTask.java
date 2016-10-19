@@ -33,15 +33,23 @@ public class SendMultipleInvitesAsyncTask extends AsyncTask<String, Void, JSONOb
     private Context context;
     JSONArray array = new JSONArray();
     SendMultipleInvitesCallBack sendMultipleInvitesCallBack;
-
+    private ProgressDialog progressDialog;
     public SendMultipleInvitesAsyncTask(Context context,SendMultipleInvitesCallBack callBack)
     {
-
+        this.progressDialog = new ProgressDialog(context);
         this.context = context;
         this.sendMultipleInvitesCallBack = callBack;
 
     }
-
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        // progressDialog=new ProgressDialog(mContext);
+        progressDialog.setMessage("Sending invitations...");
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
     @Override
     protected JSONObject doInBackground(String... params) {
         try {
@@ -73,11 +81,12 @@ public class SendMultipleInvitesAsyncTask extends AsyncTask<String, Void, JSONOb
                 invitesArray = jsonObject.getJSONArray("invitations");
 
                 sendMultipleInvitesCallBack.doPostExecute(invitesArray);
-
+                progressDialog.dismiss();
             }
             else{
                 //  Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                 //Code when api fails goes here
+                progressDialog.dismiss();
             }
         }
 

@@ -1,5 +1,6 @@
 package com.example.siddhi.contactsapp.AsyncTasks;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -23,12 +24,21 @@ public class SendInviteAsyncTask  extends AsyncTask<Map<String, String>, Void, J
     JSONObject jsonParams;
     private Context mContext;
     private static String KEY_SUCCESS = "Invitation sent.";
-
+    private ProgressDialog progressDialog;
 
     public SendInviteAsyncTask(Context context) {
         this.mContext = context;
+        this.progressDialog = new ProgressDialog(context);
     }
-
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        // progressDialog=new ProgressDialog(mContext);
+        progressDialog.setMessage("Sending invitation...");
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
     @Override
     protected JSONObject doInBackground(Map<String, String>... params) {
         try {
@@ -61,12 +71,12 @@ public class SendInviteAsyncTask  extends AsyncTask<Map<String, String>, Void, J
 
                 if (response.getString("message").equalsIgnoreCase(KEY_SUCCESS)) {
                     Toast.makeText(mContext, "Invitation sent.", Toast.LENGTH_LONG).show();
-
+                    progressDialog.dismiss();
 
                 } else {
 
                     Toast.makeText(mContext, "Could not send Invitation.", Toast.LENGTH_LONG).show();
-
+                    progressDialog.dismiss();
                 }
             }
             catch(JSONException e){
@@ -74,6 +84,4 @@ public class SendInviteAsyncTask  extends AsyncTask<Map<String, String>, Void, J
             }
         }
     }
-
-
 }

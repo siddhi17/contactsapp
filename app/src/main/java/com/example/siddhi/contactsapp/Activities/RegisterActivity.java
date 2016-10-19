@@ -1,5 +1,6 @@
 package com.example.siddhi.contactsapp.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -34,6 +35,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -49,8 +52,8 @@ public class RegisterActivity extends AppCompatActivity {
     private ImageView imageViewBack;
     private SharedPreferences sharedpreferences;
     private boolean mResult;
-
-
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 111;
+ private boolean result;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
 
     @Override
@@ -186,21 +189,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         return ret;
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(userChoosenTask.equals("Take Photo"))
-                        cameraIntent();
-                    else if(userChoosenTask.equals("Choose from Library"))
-                        galleryIntent();
-                } else {
-                    //code for deny
-                }
-                break;
-        }
-    }
 
     private void selectImage() {
         final CharSequence[] items = { "Take Photo", "Choose from Library",
@@ -211,38 +199,51 @@ public class RegisterActivity extends AppCompatActivity {
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result=Utility.checkPermission(RegisterActivity.this);
 
-                if (items[item].equals("Take Photo")) {
-                    userChoosenTask ="Take Photo";
-                    if(result)
-                        cameraIntent();
 
-                } else if (items[item].equals("Choose from Library")) {
-                    userChoosenTask ="Choose from Library";
-                    if(result)
-                        galleryIntent();
+                    if (items[item].equals("Take Photo")) {
+                        userChoosenTask = "Take Photo";
 
-                } else if (items[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
+                        result = Utility.checkAndRequestPermissions(RegisterActivity.this);
+
+                        if (result) {
+                            cameraIntent();
+                        }
+
+                    } else if (items[item].equals("Choose from Library")) {
+                        userChoosenTask = "Choose from Library";
+
+                        result = Utility.checkAndRequestPermissions(RegisterActivity.this);
+
+                        if (result) {
+                            galleryIntent();
+                        }
+
+                    } else if (items[item].equals("Cancel")) {
+                        dialog.dismiss();
+                    }
+
             }
         });
         builder.show();
+
     }
 
     private void galleryIntent()
     {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);//
-        startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
+
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);//
+            startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+
     }
 
     private void cameraIntent()
     {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_CAMERA);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_CAMERA);
+
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -258,6 +259,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         thumbnail.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 
@@ -284,9 +286,11 @@ public class RegisterActivity extends AppCompatActivity {
     private void onSelectFromGalleryResult(Intent data) {
 
         Bitmap bm=null;
+
         if (data != null) {
             try {
                 bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -307,7 +311,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         try {
 
-
             File tempFile = File.createTempFile("temp",null, getCacheDir());
             FileOutputStream fos = new FileOutputStream(tempFile);
             fos.write(byteArray);
@@ -320,7 +323,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         profile_image.setImageBitmap(bm);
-
 
     }
 
@@ -382,5 +384,34 @@ public class RegisterActivity extends AppCompatActivity {
         new RegisterUserAsyncTask(RegisterActivity.this, fullName, userName, password, mobileNo, emailId, deviceId,mProfileImage).execute();
 
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_ID_MULTIPLE_PERMISSIONS:
+            {
+                Map<String, Integer> perms = new HashMap<String, Integer>();
+                // Initial
+                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+                // Fill with results
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
 
+                //    Toast.makeText(RegisterActivity.this, "Some Permission are Denied", Toast.LENGTH_SHORT).show();
+
+                if(userChoosenTask.equals("Take Photo"))
+                {
+                    cameraIntent();
+                }
+                else if(userChoosenTask.equals("Choose from Library"))
+                {
+                    galleryIntent();
+                }
+
+            }
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 }

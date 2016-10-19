@@ -34,6 +34,7 @@ import com.example.siddhi.contactsapp.Contact;
 import com.example.siddhi.contactsapp.R;
 import com.example.siddhi.contactsapp.helper.ServiceUrl;
 import com.example.siddhi.contactsapp.helper.SquareImageView;
+import com.example.siddhi.contactsapp.helper.Utility;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -87,6 +88,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
                 // your code here ...
+
+                bitmap = Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*0.8), (int)(bitmap.getHeight()*0.8), true);
+
                 contactHolder.thumbnail.setImageBitmap(bitmap);
 
                 Log.e("ProfileImage", contact.getmProfileImage());
@@ -269,23 +273,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
                 @Override
                 public void onClick(View view) {
 
-                    if (ContextCompat.checkSelfPermission(mContext,
-                            Manifest.permission.CALL_PHONE)
-                            != PackageManager.PERMISSION_GRANTED) {
-
-                        ActivityCompat.requestPermissions(mContext,
-                                new String[]{Manifest.permission.CALL_PHONE},
-                                MY_PERMISSIONS_REQUEST_CALL);
-
-                    }
-                    else {
-
-                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + contact.getmMobileNo()));
+                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + contact.getmMobileNo()));
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         mContext.startActivity(intent);
                         dialog.dismiss();
-                    }
-
                 }
             });
 
@@ -323,4 +314,5 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
 
         }
     }
+
 }

@@ -79,7 +79,7 @@ public class GetInvitationsAsyncTask  extends AsyncTask<String, Void, JSONObject
 
                     progressDialog.dismiss();
                 } else {
-                    Toast.makeText(mContext, "Unable to Fetch Invitations", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "You have not received any invitation.", Toast.LENGTH_LONG).show();
                     progressDialog.dismiss();
                 }
             } catch (JSONException e) {

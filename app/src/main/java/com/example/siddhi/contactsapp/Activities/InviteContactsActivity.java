@@ -51,6 +51,7 @@ import com.example.siddhi.contactsapp.database.ContactTableHelper;
 import com.example.siddhi.contactsapp.helper.DividerItemDecoration;
 import com.example.siddhi.contactsapp.helper.MessageService;
 import com.example.siddhi.contactsapp.helper.SendSmsPermission;
+import com.example.siddhi.contactsapp.helper.Utility;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -66,6 +67,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class InviteContactsActivity extends AppCompatActivity implements SendMultipleInvitesAsyncTask.SendMultipleInvitesCallBack {
 
@@ -88,6 +90,8 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
     private View positiveAction;
     private String mUserId,mUsername;
     private EditText usernameInput;
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 111;
+    private boolean result,mContacts,mSendMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,46 +233,59 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
 
                 Log.e("inviteList", String.valueOf(invitationArrayList.size()));
 
-                Gson gson = new Gson();
+                result = Utility.checkAndRequestPermissions(InviteContactsActivity.this);
+
+                if(result) {
+
+                    Gson gson = new Gson();
                 String toServer = gson.toJson(
                         Collections.singletonMap("invitations", invitationArrayList)
                 );
+                mSendMessage = true;
 
-                new SendMultipleInvitesAsyncTask(InviteContactsActivity.this, InviteContactsActivity.this).execute(toServer);
+                    new SendMultipleInvitesAsyncTask(InviteContactsActivity.this, InviteContactsActivity.this).execute(toServer);
 
-                finish();
-                Intent i = new Intent(InviteContactsActivity.this, InviteContactsActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(i);
+                    finish();
+                    Intent i = new Intent(InviteContactsActivity.this, InviteContactsActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(i);
+                }
+                else {
+
+                    Toast.makeText(InviteContactsActivity.this,"Enable send sms permissions from settings.",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
-        //   mContactDb = new ContactTableHelper(InviteContactsActivity.this);
 
-        //   mContactList = mContactDb.getAllContacts();
+        mContacts = true;
+        result = Utility.checkAndRequestPermissions(InviteContactsActivity.this);
+        if(result) {
+            mContactList = getContactList();
 
-        mContactList = getContactList();
+            mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+            mRecyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(InviteContactsActivity.this);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+            mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(InviteContactsActivity.this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            mAdapter = new InviteAdapter(InviteContactsActivity.this, mContactList);
+            mRecyclerView.setAdapter(mAdapter);
+        }
 
-        mAdapter = new InviteAdapter(InviteContactsActivity.this, mContactList);
-        mRecyclerView.setAdapter(mAdapter);
+
     }
 
     @Override
     public void doPostExecute(JSONArray response) throws JSONException {
 
+
         ArrayList<String> numbers = new ArrayList<>();
 
         for (int i = 0; i < response.length(); i++) {
 
-            //    Invitation invitation = new Invitation();
             JSONObject subObject1 = response.getJSONObject(i);
 
             String status = subObject1.getString("status");
@@ -281,41 +298,11 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
                 String num = number.trim().replaceAll(" ","");
                 numbers.add(num);
 
-             /*  try {
-                    SmsManager sms = SmsManager.getDefault();
-                    PendingIntent sentPI;
-                    String SENT = "SMS_SENT";
-
-                    sentPI = PendingIntent.getBroadcast(InviteContactsActivity.this, 0,new Intent(SENT), 0);
-
-                    //  sms.sendTextMessage(phoneNumber, null, message, sentPI, null);
-                    sms.sendTextMessage("8655864341", null, "Hi,add me to your unique contact list.",sentPI, null);
-
-                    Toast.makeText(getApplicationContext(), "SMS Sent!" +" " + number,
-                            Toast.LENGTH_LONG).show();
-                }
-                catch (Exception e)
-                {
-                    Toast.makeText(getApplicationContext(),
-                            "SMS failed, please try again later!" + " " + number,
-                            Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }*/
-
-
-                if(SendSmsPermission.checkPermission(InviteContactsActivity.this)) {
-
                     Intent serviceIntent = new Intent(this, MessageService.class);
                     serviceIntent.putStringArrayListExtra("numbers", numbers);
                     startService(serviceIntent);
-                    IntentFilter filter = new IntentFilter();
-                    this.registerReceiver(smsDeliveredReceiver, filter);
-                    filter = new IntentFilter();
-                    this.registerReceiver(smsSentReceiver, filter);
-                }
-                else {
-                    boolean r = SendSmsPermission.checkPermission(InviteContactsActivity.this);
-                }
+
+                Toast.makeText(this, "Invitation has been sent to " + num, Toast.LENGTH_SHORT).show();
 
             } else {
                 subObject1 = response.getJSONObject(i);
@@ -323,89 +310,14 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
                 String number = subObject1.getString("invitee_no");
                 Toast.makeText(InviteContactsActivity.this, "Invitation has been sent before to number:" + number, Toast.LENGTH_SHORT).show();
             }
+
         }
 
-       // requestSmsPermission();
-
-    }
-
-    private boolean isSendSmsAllowed() {
-        //Getting the permission status
-        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS);
-
-        //If permission is granted returning true
-        if (result == PackageManager.PERMISSION_GRANTED)
-            return true;
-
-        //If permission is not granted returning false
-        return false;
-    }
-
-    private boolean isReceiveSmsAllowed() {
-        //Getting the permission status
-        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS);
-
-        //If permission is granted returning true
-        if (result == PackageManager.PERMISSION_GRANTED)
-            return true;
-
-        //If permission is not granted returning false
-        return false;
-    }
-
-    //Requesting permission
-    private void requestSmsPermission() {
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SEND_SMS)) {
-            //If the user has denied the permission previously your code will come to this block
-            //Here you can explain why you need this permission
-            //Explain here why you need this permission
-        } else {
-            //And finally ask for the permission
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS);
-        }
-
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_SMS)) {
-            //If the user has denied the permission previously your code will come to this block
-            //Here you can explain why you need this permission
-            //Explain here why you need this permission
-        } else {
-            //And finally ask for the permission
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS}, RECEIVE_SMS);
-        }
-    }
-
-    //This method will be called when the user will tap on allow or deny
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        //Checking the request code of our request
-        if (requestCode == SEND_SMS) {
-
-            //If permission is granted
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                //Displaying a toast
-
-            } else {
-                //Displaying another toast if permission is not granted
-                Toast.makeText(this, "Oops you just denied the permission", Toast.LENGTH_LONG).show();
-            }
-        } else if (requestCode == RECEIVE_SMS) {
-            //If permission is granted
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                //Displaying a toast
-
-            } else {
-                //Displaying another toast if permission is not granted
-                Toast.makeText(this, "Oops you just denied the permission", Toast.LENGTH_LONG).show();
-            }
-        }
     }
 
     public ArrayList<Contact> getContactList() {
+
+
         ArrayList<Contact> contactList = new ArrayList<Contact>();
 
         Uri contactUri = ContactsContract.Contacts.CONTENT_URI;
@@ -522,5 +434,61 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
                 pCur.close();
             }
             return null;*/
+          @Override
+          public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+              switch (requestCode) {
+                  case REQUEST_ID_MULTIPLE_PERMISSIONS:
+                  {
+                      Map<String, Integer> perms = new HashMap<String, Integer>();
+                      // Initial
+                      perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                      perms.put(Manifest.permission.READ_CONTACTS, PackageManager.PERMISSION_GRANTED);
+                      perms.put(Manifest.permission.SEND_SMS, PackageManager.PERMISSION_GRANTED);
+                      perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+                      // Fill with results
+                      for (int i = 0; i < permissions.length; i++)
+                          perms.put(permissions[i], grantResults[i]);
 
+                      if (perms.get(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+
+                          if(mContacts)
+                          // All Permissions Granted
+                          {
+                              mContactList = getContactList();
+                              mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+                              mRecyclerView.setHasFixedSize(true);
+                              RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(InviteContactsActivity.this);
+                              mRecyclerView.setLayoutManager(mLayoutManager);
+                              mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+                              mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+                              mAdapter = new InviteAdapter(InviteContactsActivity.this, mContactList);
+                              mRecyclerView.setAdapter(mAdapter);
+                          }
+                      }
+                      else if(perms.get(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED)
+                      {
+
+                          Gson gson = new Gson();
+                          String toServer = gson.toJson(
+                                  Collections.singletonMap("invitations", invitationArrayList)
+                          );
+                          new SendMultipleInvitesAsyncTask(InviteContactsActivity.this, InviteContactsActivity.this).execute(toServer);
+
+                          finish();
+                          Intent i = new Intent(InviteContactsActivity.this, InviteContactsActivity.class);
+                          i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                          startActivity(i);
+                      }
+                      else {
+                          // Permission Denied
+                          Toast.makeText(InviteContactsActivity.this, "Some Permissions are Denied.", Toast.LENGTH_SHORT).show();
+                      }
+                  }
+                  break;
+                  default:
+                      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+              }
+          }
 }

@@ -1,14 +1,19 @@
 package com.example.siddhi.contactsapp.Activities;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +30,9 @@ import com.example.siddhi.contactsapp.helper.Utility;
 import com.example.siddhi.contactsapp.helper.Validation;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText txtuserName;
@@ -36,6 +44,11 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnsignIn;
     private Button btnforgotPassword;
     private String refreshedToken;
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 111;
+    public static final int READ_CONTACTS = 11;
+    public static final int SEND_SMS = 21;
+    public static final int WRITE_EXTERNAL_STORAGE = 41;
+    public static final int CAMERA = 31;
 
 
     @Override
@@ -46,11 +59,8 @@ public class LoginActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        boolean result= Utility.checkPermission(LoginActivity.this);
+        boolean result = Utility.checkAndRequestPermissions(LoginActivity.this);
 
-        boolean re = ReadContactsPrmission.checkPermission(LoginActivity.this);
-
-        boolean r = SendSmsPermission.checkPermission(LoginActivity.this);
 
         txtuserName = (EditText) findViewById(R.id.edtusername);
         txtpasswordName = (EditText) findViewById(R.id.edtpass);
@@ -116,7 +126,38 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_ID_MULTIPLE_PERMISSIONS:
+            {
+                Map<String, Integer> perms = new HashMap<String, Integer>();
+                // Initial
+                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.READ_CONTACTS, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.SEND_SMS, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+                // Fill with results
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
+                // Check for ACCESS_FINE_LOCATION
+                if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    // All Permissions Granted
+
+                } else {
+                    // Permission Denied
+                    Toast.makeText(LoginActivity.this, "Some Permission are Denied", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 }

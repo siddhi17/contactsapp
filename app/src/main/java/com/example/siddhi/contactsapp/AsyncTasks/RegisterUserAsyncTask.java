@@ -150,8 +150,10 @@ public class RegisterUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
     private String convertFileToString(File profileImage) throws IOException {
 
         Bitmap bm = BitmapFactory.decodeFile(this.mprofileImage.getPath());
+        bm = Bitmap.createScaledBitmap(bm,512,512, true);
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] b = baos.toByteArray();
 
         String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);

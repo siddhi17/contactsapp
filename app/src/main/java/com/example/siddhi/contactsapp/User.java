@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * Created by Siddhi on 9/22/2016.
  */
-public class User {
+public class User implements Serializable{
     String mUserName;
     String mProfileImage;
     String mMobileNo;

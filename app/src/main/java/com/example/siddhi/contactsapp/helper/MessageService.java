@@ -47,6 +47,7 @@ public class MessageService extends Service {
                         " any changes anymore! Click download below to download the App.", sentPI, null);
             }
         }, 3000);
+
     }
 
     @Override

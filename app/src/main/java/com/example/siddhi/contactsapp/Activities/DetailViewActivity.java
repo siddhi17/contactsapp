@@ -178,7 +178,6 @@ public class DetailViewActivity extends AppCompatActivity implements GetUserAsyn
             File file = new File(Environment.getExternalStorageDirectory() + "/ContactProfileImages/" + mContact.getmProfileImage());
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             Bitmap bitmap1 = BitmapFactory.decodeFile(file.getPath(), bmOptions);
-
             toolbarImage.setImageBitmap(bitmap1);
         }
     }

@@ -280,5 +280,11 @@ public class UserTableHelper extends SQLiteOpenHelper {
         db.close();
     }*/
 
+    public int updateProfileImage(String userId,String profileImage) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_PROFILE_IMAGE,profileImage);
+        return db.update(USER_TABLE, cv, KEY_PROFILE_IMAGE + "= ?", new String[] {KEY_USER_ID});
+    }
 }

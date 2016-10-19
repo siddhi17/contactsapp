@@ -28,14 +28,24 @@ public class CreateLinkedContactAsyncTask extends AsyncTask<String, Void, JSONOb
     String user_id,linkedContact_id;
     private Context mContext;
     private static String KEY_SUCCESS = "Success, Contact is linked.";
+    private ProgressDialog progressDialog;
 
 
     public CreateLinkedContactAsyncTask(Context context, String user_id, String linkedContact_id) {
         this.mContext = context;
         this.user_id = user_id;
         this.linkedContact_id = linkedContact_id;
+        this.progressDialog = new ProgressDialog(mContext);
     }
-
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        // progressDialog=new ProgressDialog(mContext);
+        progressDialog.setMessage("Accepting invitation...");
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
     @Override
     protected JSONObject doInBackground(String... params) {
         try {
@@ -69,12 +79,12 @@ public class CreateLinkedContactAsyncTask extends AsyncTask<String, Void, JSONOb
 
                 if (response.getString("message").equalsIgnoreCase(KEY_SUCCESS)) {
                     Toast.makeText(mContext, "Invitation Accepted.", Toast.LENGTH_LONG).show();
-
+                    progressDialog.dismiss();
 
                 } else {
 
                     Toast.makeText(mContext, "Could not accept Invitation.", Toast.LENGTH_LONG).show();
-
+                    progressDialog.dismiss();
                 }
             }
         catch(JSONException e){

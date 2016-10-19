@@ -27,13 +27,22 @@ public class DeleteInvitationAsyncTask extends AsyncTask<String, Void, JSONObjec
     JSONObject jsonParams;
     String mInvitation_id;
     private Context mContext;
-
+    private ProgressDialog progressDialog;
 
     public DeleteInvitationAsyncTask(Context context,String invitation_id) {
         this.mContext = context;
         this.mInvitation_id = invitation_id;
+        this.progressDialog = new ProgressDialog(mContext);
     }
-
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        // progressDialog=new ProgressDialog(mContext);
+        progressDialog.setMessage("Deleting invitation Please wait...");
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
     @Override
     protected JSONObject doInBackground(String... params) {
         try {
@@ -65,11 +74,11 @@ public class DeleteInvitationAsyncTask extends AsyncTask<String, Void, JSONObjec
 
                 if (response.getString("message").equalsIgnoreCase("Invitation Deleted Successfully.")) {
                     Toast.makeText(mContext, "Invitation Rejected.", Toast.LENGTH_LONG).show();
-
+                    progressDialog.dismiss();
                 } else {
 
                     Toast.makeText(mContext, "Could not reject Invitation.", Toast.LENGTH_LONG).show();
-
+                    progressDialog.dismiss();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

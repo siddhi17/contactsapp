@@ -1,8 +1,11 @@
 package com.example.siddhi.contactsapp.AsyncTasks;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -13,6 +16,9 @@ import android.widget.Toast;
 
 import com.example.siddhi.contactsapp.Activities.MainActivity;
 import com.example.siddhi.contactsapp.Activities.ProfileActivity;
+import com.example.siddhi.contactsapp.User;
+import com.example.siddhi.contactsapp.database.DatabaseHelper;
+import com.example.siddhi.contactsapp.database.UserTableHelper;
 import com.example.siddhi.contactsapp.helper.ImageServer;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -124,16 +130,24 @@ public class ImageUserTask extends AsyncTask<Void,Void,Bitmap> {
 
         if(image != null) {
 
+            image = Bitmap.createScaledBitmap(image,512,512, true);
+
             String root = Environment.getExternalStorageDirectory().toString();
             File myDir = new File(root + "/Profile");
             if (!myDir.exists()) {
                 myDir.mkdirs();
             }
+            SharedPreferences sharedpreferences = mContext.getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
 
+            String userId = sharedpreferences.getString("userId", "");
             String fname = "Profile_Image" + ".png";
 
             File file = new File(myDir, fname);
             Log.i("file", "" + file);
+
+        //    UserTableHelper db = new UserTableHelper(mContext);
+
+        //    db.updateProfileImage(userId,fname);
 
             try {
                 FileOutputStream out = new FileOutputStream(file);
