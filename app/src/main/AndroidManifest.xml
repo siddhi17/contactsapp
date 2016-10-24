@@ -27,23 +27,23 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".helper.MyFirebaseMessagingService">
+        <service android:name=".helper.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <activity
             android:name=".Activities.RegisterActivity"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Activities.DetailViewActivity" >
-        <intent-filter>
-            <action android:name="OPEN_ACTIVITY_2" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
+        <activity android:name=".Activities.DetailViewActivity">
+            <intent-filter>
+                <action android:name="OPEN_ACTIVITY_2" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activities.ProfileActivity"
@@ -67,22 +67,23 @@
         <activity
             android:name=".Activities.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity android:name=".Activities.InviteContactsActivity" />
         <activity
             android:name=".Activities.PendingInvitesActivity"
             android:label="@string/title_activity_pending_invites"
-            android:theme="@style/AppTheme" >
-        <intent-filter>
-            <action android:name="OPEN_ACTIVITY_1" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="OPEN_ACTIVITY_1" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
-        <receiver android:name=".helper.MessageService$SmsSentReceiver"></receiver>
+        <receiver android:name=".helper.MessageService$SmsSentReceiver" />
         <receiver android:name=".helper.MessageService$SmsDeliveredReceiver" />
 
-        <activity android:name=".Activities.InviteByUsername"></activity>
+        <activity android:name=".Activities.PreferencesActivity"></activity>
     </application>
 
 </manifest>

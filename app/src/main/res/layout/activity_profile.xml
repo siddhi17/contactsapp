@@ -70,24 +70,60 @@
         android:gravity="center"
         android:layout_below="@+id/thumbnail"
         android:layout_marginTop="20dp">
+
+        <LinearLayout
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Full name"
+            android:id="@+id/textView10"
+            android:layout_below="@+id/thumbnail"
+            android:layout_toLeftOf="@+id/thumbnail"
+            android:layout_toStartOf="@+id/thumbnail"
+            android:layout_gravity="left" />
+
         <EditText
-            android:layout_width="253dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtname"
-            android:hint="@string/name"
             android:textColor="#141212"
-            android:textColorHint="#a8a8a8"
             android:textAlignment="textStart"
             android:layout_gravity="center_horizontal"
             android:minHeight="30dp"
             android:inputType="text"
-            android:singleLine="true"
-            />
+            android:singleLine="true" />
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Username"
+            android:id="@+id/textView11"
+            android:layout_below="@+id/thumbnail"
+            android:layout_toLeftOf="@+id/thumbnail"
+            android:layout_toStartOf="@+id/thumbnail"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="10dp" />
+
         <EditText
-            android:layout_width="253dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtusername"
-            android:hint="@string/Username"
             android:textColor="#141212"
             android:textColorHint="#a8a8a8"
             android:textAlignment="textStart"
@@ -97,16 +133,33 @@
           android:editable="false"
             android:singleLine="true"
             />
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_gravity="center_horizontal">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Mobile number"
+            android:id="@+id/textView12"
+            android:layout_below="@+id/thumbnail"
+            android:layout_toLeftOf="@+id/thumbnail"
+            android:layout_toStartOf="@+id/thumbnail"
+            android:layout_gravity="left"
+            android:layout_marginTop="10dp" />
 
         <EditText
-            android:layout_width="242dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:id="@+id/edtmobileno"
-            android:layout_gravity="center"
 
-            android:hint="@string/Mobileno."
             android:textAlignment="textStart"
             android:layout_weight="0.23"
             android:minEms="10"
@@ -115,12 +168,30 @@
             android:textColorHint="#a8a8a8"
             android:singleLine="true"
             android:inputType="phone"
-            />
+            android:layout_gravity="center" />
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Email id"
+            android:id="@+id/textView13"
+            android:layout_below="@+id/thumbnail"
+            android:layout_toLeftOf="@+id/thumbnail"
+            android:layout_toStartOf="@+id/thumbnail"
+            android:layout_marginTop="10dp" />
+
         <EditText
-            android:layout_width="253dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtemail"
-            android:hint="@string/Emailid"
             android:textColor="#141212"
             android:textColorHint="#a8a8a8"
             android:textAlignment="textStart"
@@ -130,12 +201,31 @@
             android:singleLine="true"
 
             />
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Password"
+            android:id="@+id/textView14"
+            android:layout_below="@+id/thumbnail"
+            android:layout_toLeftOf="@+id/thumbnail"
+            android:layout_toStartOf="@+id/thumbnail"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="left" />
 
         <EditText
-            android:layout_width="253dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtpass"
-            android:hint="@string/Password"
             android:textColor="#141212"
             android:textColorHint="#a8a8a8"
             android:textAlignment="textStart"
@@ -143,9 +233,28 @@
             android:minHeight="30dp"
             android:singleLine="true"
             android:inputType="textPassword" />
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Job title"
+            android:id="@+id/textView15"
+            android:layout_below="@+id/thumbnail"
+            android:layout_toLeftOf="@+id/thumbnail"
+            android:layout_toStartOf="@+id/thumbnail"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="left" />
 
         <EditText
-            android:layout_width="253dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtjodtitle"
             android:hint="@string/Jod_title"
@@ -157,8 +266,29 @@
             android:inputType="textEmailAddress"
             android:singleLine="true"
             />
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Home address"
+            android:id="@+id/textView16"
+            android:layout_below="@+id/thumbnail"
+            android:layout_toLeftOf="@+id/thumbnail"
+            android:layout_toStartOf="@+id/thumbnail"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="left" />
+
         <EditText
-            android:layout_width="253dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edthomeaddress"
             android:hint="@string/Home_Address"
@@ -171,8 +301,28 @@
             android:singleLine="true"
 
             />
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Work address"
+            android:id="@+id/textView17"
+            android:layout_below="@+id/thumbnail"
+            android:layout_toLeftOf="@+id/thumbnail"
+            android:layout_toStartOf="@+id/thumbnail"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="left" />
+
         <EditText
-            android:layout_width="253dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtworkaddress"
             android:hint="@string/Work_address"
@@ -184,8 +334,28 @@
             android:inputType="textEmailAddress"
             android:singleLine="true"
             />
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Work phone"
+            android:id="@+id/textView18"
+            android:layout_below="@+id/thumbnail"
+            android:layout_toLeftOf="@+id/thumbnail"
+            android:layout_toStartOf="@+id/thumbnail"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="left" />
+
         <EditText
-            android:layout_width="253dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtwork_phone"
             android:hint="@string/Status"
@@ -198,9 +368,10 @@
             android:singleLine="true"
 
             />
-
+</LinearLayout>
 
     </LinearLayout>
+
 </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

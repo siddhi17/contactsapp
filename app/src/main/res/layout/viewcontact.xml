@@ -35,7 +35,18 @@
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="10dp"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+                <Button
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:text="DELETE"
+                    android:background="@android:color/transparent"
+                    android:layout_gravity = "right"
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/buttonDelete"/>
+
+                </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -48,46 +59,95 @@
                 android:id="@+id/linearLayout6"
                 android:gravity="left"
                 android:background="@android:color/white">
-                <EditText
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Full name"
+            android:id="@+id/textView2"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="30dp" />
+
+        <EditText
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/edtname"
-                    android:hint="@string/Name"
-                    android:textColor="#141212"
+            android:textColor="#141212"
                     android:saveEnabled="false"
                     android:textColorHint="#534e4e"
-                    android:textAlignment="center"
-                    android:minHeight="30dp"
+            android:minHeight="30dp"
                     android:cursorVisible="false"
                     android:focusable="false"
                     android:inputType="none"
                     android:singleLine="true"
                     android:clickable="false"
                     android:layout_gravity="left"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="30dp"
-                    android:contextClickable="false"
-                    android:gravity="center" />
-                <EditText
+                    android:layout_marginLeft="40dp"
+            android:contextClickable="false"
+            android:autoText="false"
+            android:background="@android:color/transparent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Username"
+            android:id="@+id/textView8"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp" />
+
+        <EditText
                     android:saveEnabled="false"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/edtusername"
-                    android:hint="@string/Username"
-                    android:cursorVisible="false"
+            android:cursorVisible="false"
                     android:focusable="false"
                     android:clickable="false"
                     android:textColor="#141212"
-                    android:textColorHint="#534e4e"
-                    android:textAlignment="center"
                     android:minHeight="30dp"
                     android:inputType="none"
                     android:singleLine="true"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="40dp"
                     android:layout_gravity="left"
-                    android:gravity="center" />
+            android:background="@android:color/transparent" />
 
-                <EditText
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Password"
+            android:id="@+id/textView9"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp" />
+
+        <EditText
+            android:saveEnabled="false"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextPass"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:clickable="false"
+            android:textColor="#141212"
+            android:textColorHint="#534e4e"
+            android:minHeight="30dp"
+            android:inputType="none"
+            android:singleLine="true"
+            android:layout_marginLeft="40dp"
+            android:background="@android:color/transparent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Mobile number"
+            android:id="@+id/textView4"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp" />
+
+        <EditText
                     android:saveEnabled="false"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
@@ -97,15 +157,24 @@
                     android:clickable="false"
                     android:id="@+id/edtmobileno"
                     android:textColorHint="#575353"
-                    android:hint="@string/Mobileno."
-                    android:textAlignment="center"
-                    android:maxLength="10"
+            android:maxLength="10"
                     android:singleLine="true"
                     android:inputType="none"
                     android:layout_gravity="left"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="center" />
-                <EditText
+                    android:layout_marginLeft="40dp"
+            android:background="@android:color/transparent"
+            android:minHeight="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Email id"
+            android:id="@+id/textView5"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp" />
+
+        <EditText
                     android:saveEnabled="false"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
@@ -113,19 +182,26 @@
                     android:focusable="false"
                     android:clickable="false"
                     android:id="@+id/edtemail"
-                    android:hint="@string/Emailid"
-                    android:textColor="#141212"
+            android:textColor="#141212"
                     android:textColorHint="#534e4e"
-                    android:textAlignment="center"
-                    android:minHeight="30dp"
+            android:minHeight="30dp"
                     android:inputType="none"
                     android:singleLine="true"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="40dp"
                     android:layout_gravity="left"
-                    android:gravity="center" />
+            android:background="@android:color/transparent" />
 
 
-                <EditText
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Work phone"
+            android:id="@+id/textView6"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp" />
+
+        <EditText
                     android:saveEnabled="false"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
@@ -135,15 +211,21 @@
                     android:clickable="false"
                     android:id="@+id/edttelephoneno"
                     android:textColorHint="#575353"
-                    android:hint="@string/Telepheno_no"
-                    android:textAlignment="center"
-                    android:maxLength="10"
+            android:maxLength="10"
                     android:singleLine="true"
                     android:inputType="none"
                     android:layout_gravity="left"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="center" />
-
+                    android:layout_marginLeft="40dp"
+            android:background="@android:color/transparent"
+            android:minHeight="30dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Job title"
+            android:id="@+id/textView"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp" />
                 <EditText
                     android:saveEnabled="false"
                     android:layout_width="250dp"
@@ -152,16 +234,23 @@
                     android:cursorVisible="false"
                     android:focusable="false"
                     android:clickable="false"
-                    android:hint="@string/Jod_title"
                     android:textColor="#141212"
                     android:textColorHint="#534e4e"
-                    android:textAlignment="center"
                     android:minHeight="30dp"
                     android:inputType="none"
                     android:singleLine="true"
                     android:layout_gravity="left"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="center" />
+                    android:layout_marginLeft="40dp"
+                    android:background="@android:color/transparent" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Home address"
+            android:id="@+id/textView3"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp"
+            android:minHeight="30dp" />
                 <EditText
                     android:saveEnabled="false"
                     android:layout_width="250dp"
@@ -170,16 +259,21 @@
                     android:cursorVisible="false"
                     android:focusable="false"
                     android:clickable="false"
-                    android:hint="@string/Home_Address"
                     android:textColor="#141212"
                     android:textColorHint="#534e4e"
-                    android:textAlignment="center"
                     android:minHeight="30dp"
                     android:inputType="none"
                     android:singleLine="true"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="center" />
+                    android:layout_marginLeft="40dp"
+                    android:background="@android:color/transparent" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Work address"
+            android:id="@+id/textView7"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp" />
                 <EditText
                     android:saveEnabled="false"
                     android:layout_width="250dp"
@@ -188,16 +282,13 @@
                     android:cursorVisible="false"
                     android:focusable="false"
                     android:clickable="false"
-                    android:hint="@string/Work_address"
                     android:textColor="#141212"
                     android:textColorHint="#534e4e"
-                    android:textAlignment="center"
                     android:minHeight="30dp"
                     android:inputType="none"
                     android:singleLine="true"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="center" />
+                    android:layout_marginLeft="40dp"
+                    android:background="@android:color/transparent" />
 
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -137,17 +137,12 @@ public class ImageUserTask extends AsyncTask<Void,Void,Bitmap> {
             if (!myDir.exists()) {
                 myDir.mkdirs();
             }
-            SharedPreferences sharedpreferences = mContext.getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
 
-            String userId = sharedpreferences.getString("userId", "");
             String fname = "Profile_Image" + ".png";
 
             File file = new File(myDir, fname);
             Log.i("file", "" + file);
 
-        //    UserTableHelper db = new UserTableHelper(mContext);
-
-        //    db.updateProfileImage(userId,fname);
 
             try {
                 FileOutputStream out = new FileOutputStream(file);

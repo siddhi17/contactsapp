@@ -303,6 +303,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
                     Intent intent = new Intent(mContext,DetailViewActivity.class);
                     intent.putExtra("contact",contact);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     mContext.startActivity(intent);
 
                     dialog.dismiss();

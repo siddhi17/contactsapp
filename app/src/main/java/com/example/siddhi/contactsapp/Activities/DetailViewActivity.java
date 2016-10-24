@@ -3,6 +3,7 @@ package com.example.siddhi.contactsapp.Activities;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -17,11 +18,14 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.Display;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.siddhi.contactsapp.AsyncTasks.DeleteContactAsyncTask;
 import com.example.siddhi.contactsapp.AsyncTasks.GetUserAsyncTask;
+import com.example.siddhi.contactsapp.AsyncTasks.SendInviteAsyncTask;
 import com.example.siddhi.contactsapp.Contact;
 import com.example.siddhi.contactsapp.R;
 import com.example.siddhi.contactsapp.database.ContactTableHelper;
@@ -30,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.HashMap;
 
 
 /**
@@ -38,7 +43,7 @@ import java.io.File;
 public class DetailViewActivity extends AppCompatActivity implements GetUserAsyncTask.GetUserCallBack{
 
     private ImageView profileImage;
-    private EditText edtName,edtFullName,edtMobile,edtEmailId,edtPhone,edtJobTitle,edtWorkAddress,edtHomeAddress;
+    private EditText edtName,edtFullName,edtMobile,edtEmailId,edtPhone,edtJobTitle,edtWorkAddress,edtHomeAddress,edtPass;
 
     private Intent mIntent;
     private Contact mContact;
@@ -47,10 +52,11 @@ public class DetailViewActivity extends AppCompatActivity implements GetUserAsyn
     final int version = android.os.Build.VERSION.SDK_INT;
     private AppBarLayout appBarLayout;
     private int width;
-    private String mUserId;
+    private String mUserId,mLoggedInUserId;
     private Boolean mUpdateNotification= false;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
+    private Button buttonDelete;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -61,11 +67,23 @@ public class DetailViewActivity extends AppCompatActivity implements GetUserAsyn
 
         setUI();
 
+        SharedPreferences sharedpreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
+
+        mLoggedInUserId = sharedpreferences.getString("userId", "");
+
         mIntent = getIntent();
 
         Bundle data = getIntent().getExtras();
 
         mUserId = data.getString("user_id");
+
+        if(mUserId == null)
+        {
+
+            mUserId = getIntent().getStringExtra("userId");
+            mUpdateNotification = getIntent().getBooleanExtra("updateNotification",false);
+
+        }
 
         String temp =  data.getString("updateNotification");
 
@@ -100,6 +118,8 @@ public class DetailViewActivity extends AppCompatActivity implements GetUserAsyn
         final Display dWidth = getWindowManager().getDefaultDisplay();
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.cordinator_layout);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
+
+        buttonDelete = (Button)findViewById(R.id.buttonDelete);
 
         appBarLayout.post(new Runnable() {
             @Override
@@ -161,14 +181,71 @@ public class DetailViewActivity extends AppCompatActivity implements GetUserAsyn
 //To give the effect "in the middle" of the image (like gif)
         //  appBarLayout.collapseToolbar();
 
-        edtPhone.setText(mContact.getmWorkPhone());
-        edtEmailId.setText(mContact.getmEmailId());
-        edtHomeAddress.setText(mContact.getmHomeAddress());
-        edtFullName.setText(mContact.getmFullName());
-        edtJobTitle.setText(mContact.getmJobTitle());
+
+        if(mContact.getmWorkPhone().equals(""))
+        {
+            edtPhone.setText("Empty");
+        }
+        else {
+            edtPhone.setText(mContact.getmWorkPhone());
+        }
+
+        if(mContact.getmEmailId().equals(""))
+        {
+            edtEmailId.setText("Empty");
+        }
+        else {
+        edtEmailId.setText(mContact.getmEmailId());}
+
+        if(mContact.getmHomeAddress().equals(""))
+        {
+            edtHomeAddress.setText("Empty");
+        }
+        else {
+            edtHomeAddress.setText(mContact.getmHomeAddress());
+        }
+
+        if(mContact.getmFullName().equals(""))
+        {
+            edtFullName.setText("Empty");
+        }
+        else {
+            edtFullName.setText(mContact.getmFullName());
+        }
+
+        if(mContact.getmJobTitle().equals(""))
+        {
+            edtJobTitle.setText("Empty");
+        }
+        else {
+            edtJobTitle.setText(mContact.getmJobTitle());
+        }
+
         edtName.setText(mContact.getmUserName());
-        edtWorkAddress.setText(mContact.getmWorkAddress());
-        edtMobile.setText(mContact.getmMobileNo());
+
+        if(mContact.getmWorkAddress().equals(""))
+        {
+            edtWorkAddress.setText("Empty");
+        }
+        else {
+            edtWorkAddress.setText(mContact.getmWorkAddress());
+        }
+
+        if(mContact.getmMobileNo().equals(""))
+        {
+            edtMobile.setText("Empty");
+        }
+        else {
+            edtMobile.setText(mContact.getmMobileNo());
+        }
+        if(mContact.getmPass().equals(""))
+        {
+            edtMobile.setText("Empty");
+        }
+        else {
+            edtPass.setText(mContact.getmPass());
+        }
+
 
         if(mContact.getmProfileImage().equals("") && mContact.getmProfileImage() != null)
         {
@@ -180,6 +257,24 @@ public class DetailViewActivity extends AppCompatActivity implements GetUserAsyn
             Bitmap bitmap1 = BitmapFactory.decodeFile(file.getPath(), bmOptions);
             toolbarImage.setImageBitmap(bitmap1);
         }
+
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                HashMap<String, String> params = new HashMap<String, String>();
+
+                params.put("user_id", mLoggedInUserId);
+                params.put("linked_contact_id",mContact.getContactId());
+
+
+                DeleteContactAsyncTask deleteContactAsyncTask = new DeleteContactAsyncTask(DetailViewActivity.this,mContact.getContactId());
+                deleteContactAsyncTask.execute(params);
+
+            }
+        });
+
+
     }
 
    // private void toolbarTextAppernce() {
@@ -191,6 +286,7 @@ public class DetailViewActivity extends AppCompatActivity implements GetUserAsyn
         super.onBackPressed();
         Intent i = new Intent(DetailViewActivity.this,MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
     }
     private void setAppBarOffset(int offsetPx) {
@@ -210,6 +306,7 @@ public class DetailViewActivity extends AppCompatActivity implements GetUserAsyn
         edtWorkAddress = (EditText)findViewById(R.id.edtworkaddress);
         edtJobTitle = (EditText)findViewById(R.id.edtjodtitle);
         edtPhone = (EditText)findViewById(R.id.edttelephoneno);
+        edtPass = (EditText)findViewById(R.id.editTextPass);
 
     }
 
@@ -243,6 +340,7 @@ public class DetailViewActivity extends AppCompatActivity implements GetUserAsyn
 
         ContactTableHelper db = new ContactTableHelper(DetailViewActivity.this);
         db.updateContact(mContact);
+        db.close();
 
     }
 

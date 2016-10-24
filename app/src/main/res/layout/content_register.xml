@@ -36,7 +36,6 @@
                 android:layout_width="253dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/edtname"
-                android:hint="@string/name"
                 android:textColor="#141212"
                 android:textColorHint="#a8a8a8"
                 android:textAlignment="textStart"
@@ -45,13 +44,11 @@
                 android:inputType="text"
                 android:singleLine="true"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/thumbnail"
-                android:layout_marginTop="40dp" />
+                android:layout_below="@+id/textView19" />
             <EditText
                 android:layout_width="253dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/edtusername"
-                android:hint="@string/Username"
                 android:textColor="#141212"
                 android:textColorHint="#a8a8a8"
                 android:textAlignment="textStart"
@@ -59,8 +56,9 @@
                 android:minHeight="30dp"
                 android:inputType="text"
                 android:singleLine="true"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/edtname" />
+                android:layout_below="@+id/textView20"
+                android:layout_alignLeft="@+id/edtmobileno"
+                android:layout_alignStart="@+id/edtmobileno" />
 
 
             <EditText
@@ -69,7 +67,6 @@
                 android:id="@+id/edtmobileno"
                 android:layout_gravity="center"
                 android:textColorHint="#a8a8a8"
-                android:hint="@string/Mobileno."
                 android:textAlignment="textStart"
                 android:layout_weight="0.23"
                 android:minEms="10"
@@ -80,12 +77,11 @@
                 android:layout_alignParentRight="false"
                 android:layout_alignParentEnd="false"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/edtusername" />
+                android:layout_below="@+id/textView21" />
             <EditText
                 android:layout_width="253dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/edtemail"
-                android:hint="@string/Emailid"
                 android:textColor="#141212"
                 android:textColorHint="#a8a8a8"
                 android:textAlignment="textStart"
@@ -95,12 +91,11 @@
                 android:singleLine="true"
 
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/edtmobileno" />
+                android:layout_below="@+id/textView22" />
             <EditText
                 android:layout_width="253dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/edtconpass"
-                android:hint="@string/ConfirmPassword"
                 android:textColor="#141212"
                 android:textColorHint="#a8a8a8"
                 android:textAlignment="textStart"
@@ -109,12 +104,11 @@
                 android:inputType="textPassword"
                 android:singleLine="true"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/edtemail" />
+                android:layout_below="@+id/textView23" />
             <EditText
                 android:layout_width="253dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/edtpass"
-                android:hint="@string/Password"
                 android:textColor="#141212"
                 android:textColorHint="#a8a8a8"
                 android:textAlignment="textStart"
@@ -124,7 +118,7 @@
                 android:inputType="textPassword"
                 android:layout_marginBottom="35dp"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/edtconpass" />
+                android:layout_below="@+id/textView24" />
 
             <Button
                 android:layout_width="wrap_content"
@@ -141,6 +135,73 @@
                 android:layout_below="@+id/edtpass"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Full name"
+                android:id="@+id/textView19"
+                android:layout_below="@+id/thumbnail"
+                android:layout_alignLeft="@+id/edtname"
+                android:layout_alignStart="@+id/edtname"
+                android:layout_marginTop="40dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Username"
+                android:id="@+id/textView20"
+                android:layout_below="@+id/edtname"
+                android:layout_alignLeft="@+id/edtname"
+                android:layout_alignStart="@+id/edtname"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Mobile number"
+                android:id="@+id/textView21"
+                android:layout_centerVertical="true"
+                android:layout_alignLeft="@+id/edtusername"
+                android:layout_alignStart="@+id/edtusername"
+                android:layout_below="@+id/edtusername"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Email id"
+                android:id="@+id/textView22"
+                android:layout_alignLeft="@+id/edtmobileno"
+                android:layout_alignStart="@+id/edtmobileno"
+                android:layout_below="@+id/edtmobileno"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Password"
+                android:id="@+id/textView23"
+                android:layout_below="@+id/edtemail"
+                android:layout_alignLeft="@+id/edtemail"
+                android:layout_alignStart="@+id/edtemail"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Confirm Password"
+                android:id="@+id/textView24"
+                android:layout_below="@+id/edtconpass"
+                android:layout_alignLeft="@+id/edtconpass"
+                android:layout_alignStart="@+id/edtconpass"
+                android:layout_marginTop="10dp" />
 
 
         </RelativeLayout>

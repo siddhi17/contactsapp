@@ -45,9 +45,10 @@
                     android:layout_marginRight="10dp"
                     android:background="@drawable/ic_send_white_24dp"
                     android:id="@+id/imageSelect"
-                    android:layout_alignTop="@+id/imageMenu"
                     android:layout_toStartOf="@+id/imageMenu"
-                    android:layout_marginEnd="10dp" />
+                    android:layout_marginEnd="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/imageMenu" />
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -59,11 +60,11 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true" />
                 <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity = "right"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity = "right"
                     android:layout_marginRight="10dp"
-                android:background="@drawable/ic_more_vert_white_24dp"
+                    android:background="@drawable/ic_more_vert_white_24dp"
                     android:id="@+id/imageMenu"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"

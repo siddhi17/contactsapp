@@ -15,7 +15,7 @@
         android:layout_weight="2.25">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+
             android:id="@+id/thumbnail"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -24,7 +24,6 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="05dp" />
 
-        <!--android:layout_weight="1.5"-->
     </LinearLayout>
 
     <LinearLayout

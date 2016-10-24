@@ -287,4 +287,13 @@ public class UserTableHelper extends SQLiteOpenHelper {
         cv.put(KEY_PROFILE_IMAGE,profileImage);
         return db.update(USER_TABLE, cv, KEY_PROFILE_IMAGE + "= ?", new String[] {KEY_USER_ID});
     }
+
+
+    public void deleteAllUsers()
+    {
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.execSQL("delete from "+ USER_TABLE);
+        database.close();
+
+    }
 }

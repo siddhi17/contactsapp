@@ -1,19 +1,14 @@
 package com.example.siddhi.contactsapp.Activities;
 
 import android.Manifest;
-import android.app.PendingIntent;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -21,14 +16,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.telephony.SmsManager;
-import android.telephony.TelephonyManager;
 import android.text.Editable;
-import android.text.InputType;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -38,19 +28,15 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.example.siddhi.contactsapp.Adapter.ContactAdapter;
 import com.example.siddhi.contactsapp.Adapter.InviteAdapter;
 import com.example.siddhi.contactsapp.AsyncTasks.SendInviteAsyncTask;
 import com.example.siddhi.contactsapp.AsyncTasks.SendMultipleInvitesAsyncTask;
 import com.example.siddhi.contactsapp.Contact;
 import com.example.siddhi.contactsapp.Invitation;
-import com.example.siddhi.contactsapp.Invite;
 import com.example.siddhi.contactsapp.R;
-import com.example.siddhi.contactsapp.User;
 import com.example.siddhi.contactsapp.database.ContactTableHelper;
 import com.example.siddhi.contactsapp.helper.DividerItemDecoration;
 import com.example.siddhi.contactsapp.helper.MessageService;
-import com.example.siddhi.contactsapp.helper.SendSmsPermission;
 import com.example.siddhi.contactsapp.helper.Utility;
 import com.google.gson.Gson;
 
@@ -65,7 +51,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -92,6 +77,7 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
     private EditText usernameInput;
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 111;
     private boolean result,mContacts,mSendMessage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,7 +218,7 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
                 invitationArrayList = mAdapter.getArrayList();
 
                 Log.e("inviteList", String.valueOf(invitationArrayList.size()));
-
+                mSendMessage = true;
                 result = Utility.checkAndRequestPermissions(InviteContactsActivity.this);
 
                 if(result) {
@@ -241,19 +227,15 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
                 String toServer = gson.toJson(
                         Collections.singletonMap("invitations", invitationArrayList)
                 );
-                mSendMessage = true;
+
 
                     new SendMultipleInvitesAsyncTask(InviteContactsActivity.this, InviteContactsActivity.this).execute(toServer);
 
-                    finish();
-                    Intent i = new Intent(InviteContactsActivity.this, InviteContactsActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(i);
-                }
-                else {
 
-                    Toast.makeText(InviteContactsActivity.this,"Enable send sms permissions from settings.",Toast.LENGTH_SHORT).show();
+
+
                 }
+
             }
         });
 
@@ -311,6 +293,10 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
                 Toast.makeText(InviteContactsActivity.this, "Invitation has been sent before to number:" + number, Toast.LENGTH_SHORT).show();
             }
 
+            finish();
+            Intent intent = new Intent(InviteContactsActivity.this, InviteContactsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
         }
 
     }
@@ -469,17 +455,18 @@ public class InviteContactsActivity extends AppCompatActivity implements SendMul
                       }
                       else if(perms.get(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED)
                       {
+                          if(mSendMessage) {
+                              Gson gson = new Gson();
+                              String toServer = gson.toJson(
+                                      Collections.singletonMap("invitations", invitationArrayList)
+                              );
+                              new SendMultipleInvitesAsyncTask(InviteContactsActivity.this, InviteContactsActivity.this).execute(toServer);
 
-                          Gson gson = new Gson();
-                          String toServer = gson.toJson(
-                                  Collections.singletonMap("invitations", invitationArrayList)
-                          );
-                          new SendMultipleInvitesAsyncTask(InviteContactsActivity.this, InviteContactsActivity.this).execute(toServer);
-
-                          finish();
-                          Intent i = new Intent(InviteContactsActivity.this, InviteContactsActivity.class);
-                          i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                          startActivity(i);
+                              finish();
+                              Intent i = new Intent(InviteContactsActivity.this, InviteContactsActivity.class);
+                              i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                              startActivity(i);
+                          }
                       }
                       else {
                           // Permission Denied

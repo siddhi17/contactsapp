@@ -178,8 +178,13 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
             jsonParams.put("home_address", homeAddress);
 
             try{
-                jsonParams.put("profile_image",convertFileToString(this.mprofileImage));
-                System.out.println("convertFileToString(profile_image)" + convertFileToString(this.mprofileImage));
+                if(mprofileImage != null) {
+                    jsonParams.put("profile_image", convertFileToString(this.mprofileImage));
+                    System.out.println("convertFileToString(profile_image)" + convertFileToString(this.mprofileImage));
+                }
+                else {
+                    jsonParams.put("profile_image", "");
+                }
             }
             catch (Exception e)
             {
@@ -207,39 +212,45 @@ public class UpdateUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
                  //   progressDialog.dismiss();
                     updateUser = true;
 
-                    String fname;
+                    String fname = "";
 
                     try {
 
-                        FileInputStream in = new FileInputStream(mprofileImage);
-                        BufferedInputStream buf = new BufferedInputStream(in);
-                        byte[] bMapArray = new byte[buf.available()];
-                        buf.read(bMapArray);
-                        Bitmap bMap = BitmapFactory.decodeByteArray(bMapArray, 0, bMapArray.length);
+                        if(mprofileImage != null) {
+                            FileInputStream in = new FileInputStream(mprofileImage);
+                            BufferedInputStream buf = new BufferedInputStream(in);
+                            byte[] bMapArray = new byte[buf.available()];
+                            buf.read(bMapArray);
+                            Bitmap bMap = BitmapFactory.decodeByteArray(bMapArray, 0, bMapArray.length);
 
-                        Bitmap image = Bitmap.createScaledBitmap(bMap, 512, 512, true);
+                            Bitmap image = Bitmap.createScaledBitmap(bMap, 512, 512, true);
 
-                        String root = Environment.getExternalStorageDirectory().toString();
-                        File myDir = new File(root + "/Profile");
-                        if (!myDir.exists()) {
-                            myDir.mkdirs();
+                            String root = Environment.getExternalStorageDirectory().toString();
+                            File myDir = new File(root + "/Profile");
+                            if (!myDir.exists()) {
+                                myDir.mkdirs();
+                            }
+                            fname = "Profile_Image" + ".png";
+
+                            File file = new File(myDir, fname);
+                            Log.i("file", "" + file);
+
+                            FileOutputStream out = new FileOutputStream(file);
+                            image.compress(Bitmap.CompressFormat.PNG, 100, out);
+                            out.flush();
+                            out.close();
+
+                            UserTableHelper db = new UserTableHelper(mContext);
+
+                            db.updateProfileImage(muserId, fname);
                         }
-                        fname = "Profile_Image" + ".png";
 
-                        File file = new File(myDir, fname);
-                        Log.i("file", "" + file);
 
-                        FileOutputStream out = new FileOutputStream(file);
-                        image.compress(Bitmap.CompressFormat.PNG,100, out);
-                        out.flush();
-                        out.close();
-
-                        UserTableHelper db = new UserTableHelper(mContext);
-
-                        db.updateProfileImage(muserId, fname);
 
                         UserTableHelper mDb = new UserTableHelper(mContext);
                         mDb.updateUser(mUser);
+                        mDb.close();
+
                         SharedPreferences.Editor editor = mContext.getSharedPreferences("UserProfile", mContext.MODE_PRIVATE).edit();
                         editor.putString("UserUsername", muserName);
                         editor.putString("userId", muserId);

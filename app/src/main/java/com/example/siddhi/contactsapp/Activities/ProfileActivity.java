@@ -7,9 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.PorterDuff;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -81,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
     //selected image in file
     File profileImage = null,mSavedProfileImage;
     private SharedPreferences sharedpreferences;
-    private String mUserId,url;
+    private String mUserId,url,mUserName,mFullName,mMobileNo,mEmailId,mPass,mHomeAddress,mWorkAddress,mWorkPhone,mJobtitle;
     private String userChoosenTask;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private Boolean mProfile,mUpdateUser= false,login;
@@ -102,17 +106,9 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
 
         login = sharedpreferences.getBoolean("login",false);
 
-     //   mDb = new UserTableHelper(ProfileActivity.this);
-
-//        mUser = mDb.getUser(mUserId);
-
         // get reference to the views
         setUI();
 
-
-      //  url = sharedpreferences.getString("url","");
-
-     //   Picasso.with(ProfileActivity.this).load(url).into(profileImageView);
         //Changing EditText bottom line color
         edtfullName.getBackground().mutate().setColorFilter(ContextCompat.getColor(this, R.color.yourColor1), PorterDuff.Mode.SRC_ATOP);
         edtuserName.getBackground().mutate().setColorFilter(ContextCompat.getColor(this, R.color.yourColor1), PorterDuff.Mode.SRC_ATOP);
@@ -241,7 +237,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
         }
 
         if (toolbar != null) {
-            //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -265,8 +261,6 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
                         selectImage();
                     }
                 });
-
-            //String imageprofile = loginData.getprofileImage();
 
         }
 
@@ -348,9 +342,9 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
                 onCaptureImageResult(data);
         }
     }
-
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         thumbnail.compress(Bitmap.CompressFormat.PNG, 100, bytes);
 
@@ -377,9 +371,11 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
     private void onSelectFromGalleryResult(Intent data) {
 
         Bitmap bm=null;
+
         if (data != null) {
             try {
                 bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -405,14 +401,17 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
             fos.write(byteArray);
 
             profileImage = tempFile;
-
         }
         catch (IOException e)
         {
 
         }
+
         profileImageView.setImageBitmap(bm);
+
     }
+
+
     private void selectImage() {
         final CharSequence[] items = { "Take Photo", "Choose from Library",
                 "Cancel" };
@@ -457,34 +456,33 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
         String password = edtPassword.getText().toString();
         String userId = mUser.getmUserId();
 
-        String imageprofile = mUser.getmProfileImage();
-
         String jobTitle = edtjobTitles.getText().toString();
 
         String workAddress = edtworkAdd.getText().toString();
 
         String workPhone = edtworkPhone.getText().toString();
-        if (!isValidTextBox(workPhone)) {
+
+
+        if (!isValidTextBox()) {
             edtworkPhone.setError("please enter ten digit mobile number");
         }
+        else {
 
-        String homeAddress = edthomeAdd.getText().toString();
+            String homeAddress = edthomeAdd.getText().toString();
 
-        if (profileImage == null) {
+            if (checkUpdatedValues(fullName, mobileNo, emailId, password, jobTitle, workAddress, workPhone, homeAddress)) {
 
-
-            new UpdateUserAsyncTask(this,ProfileActivity.this, userId, fullName, userName, password, mobileNo, emailId, deviceId, mSavedProfileImage, workAddress, workPhone, homeAddress, jobTitle).execute();
-
-
-        } else {
-
-            new UpdateUserAsyncTask(this,ProfileActivity.this, userId, fullName, userName, password, mobileNo, emailId, deviceId, profileImage, workAddress, workPhone, homeAddress, jobTitle).execute();
-
-            //  String profile = convertFileToString(profileImage);
+                Log.d("Update", "Not updated any value");
+                //  new UpdateUserAsyncTask(this,ProfileActivity.this, userId, fullName, userName, password, mobileNo, emailId, deviceId, mSavedProfileImage, workAddress, workPhone, homeAddress, jobTitle).execute();
+            } else if (!checkUpdatedValues(fullName, mobileNo, emailId, password, jobTitle, workAddress, workPhone, homeAddress)) {
+                new UpdateUserAsyncTask(this, ProfileActivity.this, userId, fullName, userName, password, mobileNo, emailId, deviceId,profileImage, workAddress, workPhone, homeAddress, jobTitle).execute();
+            } else {
+                new UpdateUserAsyncTask(this, ProfileActivity.this, userId, fullName, userName, password, mobileNo, emailId, deviceId, profileImage, workAddress, workPhone, homeAddress, jobTitle).execute();
+            }
         }
     }
 
-    private boolean isValidTextBox(String workPhone) {
+    private boolean isValidTextBox() {
         if (edtworkPhone.length() < 11) {
             return true;
         }
@@ -566,35 +564,10 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(i);
     }*/
-    private String convertFileToString(File profileImage) throws IOException {
 
-            Bitmap bm = BitmapFactory.decodeFile(profileImage.getPath());
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            byte[] b = baos.toByteArray();
-
-            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-
-        return encodedImage;
-
-    }
     public void setUI()
     {
 
-     /*   String userName = sharedpreferences.getString("UserUsername","");
-        String userId = sharedpreferences.getString("userId","");
-        String url = sharedpreferences.getString("url","");
-        login = sharedpreferences.getBoolean("login",false);
-        String mobileNo = sharedpreferences.getString("mobileno","");
-        String jobTitle = sharedpreferences.getString("jobTitle","");
-        String password = sharedpreferences.getString("pass","");
-        String workPhone = sharedpreferences.getString("workPhone","");
-        String workAddress = sharedpreferences.getString("workAddress","");
-        String deviceId = sharedpreferences.getString("deviceId","");
-        String homeAddress = sharedpreferences.getString("homeAddress","");
-        String fullName = sharedpreferences.getString("fullName","");
-        String profileImage = sharedpreferences.getString("profileImage","");
-        String emailId = sharedpreferences.getString("emailId","");*/
 
         edtfullName = (EditText) findViewById(R.id.edtname);
         edtuserName = (EditText) findViewById(R.id.edtusername);
@@ -612,6 +585,17 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
             mUser = (User) getIntent().getSerializableExtra("user");
         }
 
+        mUserName =  mUser.getmUserName();
+        mFullName = mUser.getmFullName();
+        mMobileNo = mUser.getmMobileNo();
+        mEmailId = mUser.getmEmailId();
+        mPass = mUser.getmPassword();
+        mHomeAddress = mUser.getmHomeAddress();
+        mWorkAddress = mUser.getmWorkAddress();
+        mWorkPhone = mUser.getmWorkPhone();
+        mJobtitle = mUser.getmJobTitle();
+
+
         edtuserName.setText(mUser.getmUserName());
         edtfullName.setText(mUser.getmFullName());
         edtmobile.setText(mUser.getmMobileNo());
@@ -628,23 +612,14 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
     @Override
     public void doPostExecute(JSONObject response,Boolean update) throws JSONException {
 
-        String status = response.getString("status");
 
         mUpdateUser = update;
-
-       /* Intent i = new Intent(ProfileActivity.this,ProfileActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(i);*/
 
         mDb = new UserTableHelper(ProfileActivity.this);
 
         mUser =  mDb.getUser(mUserId);
 
-
         setUI();
-
-      //  new GetUserAsyncTask(this, ProfileActivity.this, mUserId).execute(mUserId);
 
     }
     @Override
@@ -714,5 +689,72 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUserAsyn
             profileImageView.setImageDrawable(ContextCompat.getDrawable(ProfileActivity.this,R.drawable.profile_icon));
         }
 
+    }
+
+    public static Bitmap modifyOrientation(Bitmap bitmap, String image_absolute_path) throws IOException {
+        ExifInterface ei = new ExifInterface(image_absolute_path);
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return rotate(bitmap, 90);
+
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return rotate(bitmap, 180);
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return rotate(bitmap, 270);
+
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                return flip(bitmap, true, false);
+
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                return flip(bitmap, false, true);
+
+            default:
+                return bitmap;
+        }
+    }
+
+    public static Bitmap rotate(Bitmap bitmap, float degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
+        Matrix matrix = new Matrix();
+        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+    public static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix,
+                true);
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
+
+    public boolean checkUpdatedValues(String fullName,String mobileNo,String emailId,String password,String jobTitle,String workAddress,String workPhone,String homeAddress)
+    {
+        if(fullName.equals(mFullName) && mobileNo.equals(mMobileNo) && emailId.equals(mEmailId) && password.equals(mPass) && jobTitle.equals(mJobtitle)
+                && workAddress.equals(mWorkAddress) && workPhone.equals(mWorkPhone) && homeAddress.equals(mHomeAddress))
+        {
+            return true;
+        }
+        return  false;
     }
 }

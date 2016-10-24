@@ -19,6 +19,7 @@ public class ContactTableHelper extends SQLiteOpenHelper{
 
     private static final String CONTACT_TABLE = "contactTable";
     private static final String KEY_CONTACT_NAME = "contactName";
+    private static final String KEY_CONTACT_PASS = "contactPass";
     private static final String KEY_CONTACT_EMAIL_ID = "contactEmailId";
     private static final String KEY_CONTACT_MOBILE_NO = "contactMobileNo";
     private static final String KEY_CONTACT_PROFILE_IMAGE = "contactProfileImage";
@@ -56,6 +57,7 @@ public class ContactTableHelper extends SQLiteOpenHelper{
 
         values.put(KEY_CONTACT_ID, contact.getContactId());
         values.put(KEY_CONTACT_NAME, contact.getmUserName());
+        values.put(KEY_CONTACT_PASS, contact.getmPass());
         values.put(KEY_CONTACT_MOBILE_NO, contact.getmMobileNo());
         values.put(KEY_CONTACT_EMAIL_ID, contact.getmEmailId());
         values.put(KEY_CONTACT_FULL_NAME,contact.getmFullName());
@@ -77,7 +79,7 @@ public class ContactTableHelper extends SQLiteOpenHelper{
         Contact contact = new Contact();
 
         Cursor cursor = db.query(CONTACT_TABLE, new String[]{KEY_CONTACT_ID,
-                        KEY_CONTACT_NAME,KEY_CONTACT_MOBILE_NO,KEY_CONTACT_EMAIL_ID, KEY_CONTACT_PROFILE_IMAGE,KEY_CONTACT_FULL_NAME
+                        KEY_CONTACT_NAME, KEY_CONTACT_PASS, KEY_CONTACT_MOBILE_NO,KEY_CONTACT_EMAIL_ID, KEY_CONTACT_PROFILE_IMAGE,KEY_CONTACT_FULL_NAME
         ,KEY_CONTACT_JOB_TITLE,KEY_CONTACT_WORK_ADDRESS,KEY_CONTACT_WORK_PHONE,KEY_CONTACT_HOME_ADDRESS}, KEY_CONTACT_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
 
@@ -86,7 +88,7 @@ public class ContactTableHelper extends SQLiteOpenHelper{
 
            contact = new Contact(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),
                     cursor.getString(4),cursor.getString(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),
-                   cursor.getString(9));
+                   cursor.getString(9),cursor.getString(10));
         }
 
         return contact;
@@ -107,14 +109,15 @@ public class ContactTableHelper extends SQLiteOpenHelper{
 
                 contact.setContactId(cursor.getString(0));
                 contact.setmUserName(cursor.getString(1));
-                contact.setmMobileNo(cursor.getString(2));
-                contact.setmEmailId(cursor.getString(3));
-                contact.setmProfileImage(cursor.getString(4));
-                contact.setmFullName(cursor.getString(5));
-                contact.setmJobTitle(cursor.getString(6));
-                contact.setmWorkAddress(cursor.getString(7));
-                contact.setmWorkPhone(cursor.getString(8));
-                contact.setmHomeAddress(cursor.getString(9));
+                contact.setmPass(cursor.getString(2));
+                contact.setmMobileNo(cursor.getString(3));
+                contact.setmEmailId(cursor.getString(4));
+                contact.setmProfileImage(cursor.getString(5));
+                contact.setmFullName(cursor.getString(6));
+                contact.setmJobTitle(cursor.getString(7));
+                contact.setmWorkAddress(cursor.getString(8));
+                contact.setmWorkPhone(cursor.getString(9));
+                contact.setmHomeAddress(cursor.getString(10));
 
 
                 conList.add(contact);
@@ -129,6 +132,7 @@ public class ContactTableHelper extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
 
         values.put(KEY_CONTACT_NAME, contact.getmUserName());
+        values.put(KEY_CONTACT_PASS, contact.getmPass());
         values.put(KEY_CONTACT_EMAIL_ID, contact.getmEmailId());
         values.put(KEY_CONTACT_MOBILE_NO, contact.getmMobileNo());;
         values.put(KEY_CONTACT_JOB_TITLE, contact.getmJobTitle());
@@ -142,6 +146,26 @@ public class ContactTableHelper extends SQLiteOpenHelper{
         // updating row
         return db.update(CONTACT_TABLE, values, KEY_CONTACT_ID + " = ?",
                 new String[]{String.valueOf(contact.getContactId())});
+
+    }
+
+    public void deleteContact(String contactId) {
+        //Open the database
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        //Execute sql query to remove from database
+        //NOTE: When removing by String in SQL, value must be enclosed with ''
+        database.execSQL("DELETE FROM " + CONTACT_TABLE + " WHERE " + KEY_CONTACT_ID + "= '" + contactId + "'");
+
+        //Close the database
+        database.close();
+    }
+
+    public void deleteAllContacts()
+    {
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.execSQL("delete from "+ CONTACT_TABLE);
+        database.close();
 
     }
 }

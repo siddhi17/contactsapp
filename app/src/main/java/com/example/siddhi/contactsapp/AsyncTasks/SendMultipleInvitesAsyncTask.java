@@ -44,7 +44,7 @@ public class SendMultipleInvitesAsyncTask extends AsyncTask<String, Void, JSONOb
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        // progressDialog=new ProgressDialog(mContext);
+       // progressDialog=new ProgressDialog(context);
         progressDialog.setMessage("Sending invitations...");
         progressDialog.setIndeterminate(false);
         progressDialog.setCancelable(false);

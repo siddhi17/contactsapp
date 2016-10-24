@@ -1,8 +1,6 @@
 package com.example.siddhi.contactsapp.Activities;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,19 +8,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.PreferenceActivity;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -42,39 +36,26 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.siddhi.contactsapp.Adapter.ContactAdapter;
 import com.example.siddhi.contactsapp.AsyncTasks.GetContactsAsyncTask;
-import com.example.siddhi.contactsapp.AsyncTasks.GetUserAsyncTask;
 import com.example.siddhi.contactsapp.AsyncTasks.ImageUserTask;
 import com.example.siddhi.contactsapp.AsyncTasks.UpdateUserAsyncTask;
 import com.example.siddhi.contactsapp.Contact;
 import com.example.siddhi.contactsapp.R;
 import com.example.siddhi.contactsapp.User;
 import com.example.siddhi.contactsapp.database.ContactTableHelper;
-import com.example.siddhi.contactsapp.database.DatabaseHelper;
 import com.example.siddhi.contactsapp.database.UserTableHelper;
 import com.example.siddhi.contactsapp.helper.DividerItemDecoration;
 import com.example.siddhi.contactsapp.helper.Excpetion2JSON;
-import com.example.siddhi.contactsapp.helper.MyFirebaseInstanceIDService;
 import com.example.siddhi.contactsapp.helper.NotificationUtils;
-import com.example.siddhi.contactsapp.helper.ReadContactsPrmission;
-import com.example.siddhi.contactsapp.helper.RoundedImageView;
 import com.example.siddhi.contactsapp.helper.ServerRequest;
 import com.example.siddhi.contactsapp.helper.ServiceUrl;
-import com.example.siddhi.contactsapp.helper.SquareImageView;
 import com.example.siddhi.contactsapp.helper.Utility;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,7 +63,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -183,6 +163,23 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                 }
             });
         }
+
+
+        ImageView sync = (ImageView)findViewById(R.id.sync);
+
+        sync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                contactList.clear();
+                contactDb.deleteAllContacts();
+
+                GetContactsAsyncTask getContactsAsyncTask = new GetContactsAsyncTask(MainActivity.this,MainActivity.this,mUserId);
+                getContactsAsyncTask.execute(mUserId);
+
+            }
+        });
+
     }
 
     void setupView() {
@@ -216,6 +213,10 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
                     case R.id.nav_menu_settings:
 
+                        Intent i = new Intent(MainActivity.this, PreferenceActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(i);
+
                         break;
 
                     case R.id.nav_log_out:
@@ -226,29 +227,30 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                         editor.clear();
                         editor.commit();
 
+                        mDb.deleteAllUsers();
+                        contactDb.deleteAllContacts();
+
 
                         // db.delete(String tableName, String whereClause, String[] whereArgs);
                         // If whereClause is null, it will delete all rows.
 
-                        DatabaseHelper helper = new DatabaseHelper(MainActivity.this);
-
-                        SQLiteDatabase db = helper.getWritableDatabase(); // helper is object extends SQLiteOpenHelper
-                        db.delete(USER_TABLE, null, null);
-                        db.delete(CONTACT_TABLE, null, null);
-                        db.close();
-
                         finish();
-                        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                        i = new Intent(MainActivity.this, LoginActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         startActivity(i);
 
                         break;
 
                     case R.id.nav_invite:
 
-                        startActivity(new Intent(MainActivity.this, InviteContactsActivity.class));
+                        i = new Intent(MainActivity.this,PendingInvitesActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(i);
 
                         break;
+
+
 
                     // TODO - Handle other items
                 }
@@ -258,8 +260,10 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         TextView mTitle = (TextView) findViewById(R.id.toolbar_title);
-        Toolbar.LayoutParams params = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.MATCH_PARENT);
-        params.gravity = Gravity.CENTER_HORIZONTAL;
+      //  RelativeLayout params = new RelativeLayout(RelativeLayout.p.WRAP_CONTENT, Toolbar.LayoutParams.MATCH_PARENT);
+      //  params.gravity = Gravity.CENTER_HORIZONTAL;
+
+
 
         final ImageView menu = (ImageView) findViewById(R.id.menu);
 
@@ -297,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
         });//closing the setOnClickListener method
 
 
-        mTitle.setLayoutParams(params);
+       // mTitle.setLayoutParams(params);
         if (toolbar != null) {
             toolbar.setTitle("");
             setSupportActionBar(toolbar);
@@ -344,6 +348,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
             JSONObject subObject = subObject1;
             String contactName = subObject.getString("user_name");
             //name of the attribute in response
+            String pass = subObject.getString("password");
             String contactId = subObject.getString("user_id");
             String contactMobile = subObject.getString("mobile_no");
             String contactEmailId = subObject.getString("email_id");
@@ -365,10 +370,12 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
             contact.setmJobTitle(jobTitle);
             contact.setmWorkAddress(workAddress);
             contact.setmWorkPhone(workPhone);
+            contact.setmPass(pass);
 
             contactList.add(contact);//adding string to arraylist
 
-            contactDb.addContact(new Contact(contactId,contactName,contactMobile,contactEmailId,contactProfile,fullName,jobTitle,workAddress,workPhone,homeAddress));
+            contactDb.addContact(new Contact(contactId,contactName,pass,contactMobile,contactEmailId,contactProfile,fullName,jobTitle,workAddress,workPhone,homeAddress));
+
         }
 
         adapter = new ContactAdapter(MainActivity.this, contactList);
@@ -583,13 +590,14 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                         String homeAddress = jsonUser.getString("home_address");
                         String workPhone = jsonUser.getString("work_phone");
                         String workAddress = jsonUser.getString("work_address");
+                        String deviceId = jsonUser.getString("device_id");
 
 
                         mUser.setmUserId(userId);
                         mUser.setmMobileNo(mobileNo);
                         mUser.setmProfileImage(profileImage);
                         mUser.setmUserName(userName);
-                        mUser.setmDeviceId(refreshedToken);
+                        mUser.setmDeviceId(deviceId);
                         mUser.setmPassword(password);
                         mUser.setmEmailId(emailId);
                         mUser.setmFullName(fullName);
@@ -601,7 +609,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
 
                         mDb = new UserTableHelper(MainActivity.this);
                         mDb.addUser(new User(userId, userName, password, mobileNo, emailId, profileImage, fullName,
-                               refreshedToken, jobTitle, homeAddress, workAddress, workPhone));
+                               deviceId, jobTitle, homeAddress, workAddress, workPhone));
 
                         Log.e("userFromDatabase", String.valueOf(mDb.getUser(userId)));
 
@@ -614,7 +622,7 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
                         txtuserName.setText(mUser.getmUserName());
                         txtmobile.setText(mUser.getmMobileNo());
 
-                        new UpdateUserAsyncTask(MainActivity.this, userId, fullName, userName, password, mobileNo, emailId,refreshedToken,image, workAddress, workPhone, homeAddress, jobTitle).execute();
+                     //   new UpdateUserAsyncTask(MainActivity.this, userId, fullName, userName, password, mobileNo, emailId,refreshedToken,image, workAddress, workPhone, homeAddress, jobTitle).execute();
 
                     } else {
                         Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_LONG).show();
@@ -775,4 +783,5 @@ public class MainActivity extends AppCompatActivity implements GetContactsAsyncT
             }
         }
     }
+
 }

@@ -10,6 +10,7 @@ public class Contact implements Serializable{
 
     private String mThumbnail;
     String mUserName;
+    String mPass;
     String mProfileImage;
     String mMobileNo;
     String mEmailId;
@@ -26,11 +27,12 @@ public class Contact implements Serializable{
     public Contact() {
     }
 
-    public Contact(String contactId,String userName,String mobileNo,String emailId,String profileImage,
+    public Contact(String contactId,String userName,String pass,String mobileNo,String emailId,String profileImage,
                    String fullName,String jobTitle,String workAddress,String workPhone,String homeAddress) {
 
         this.contactId = contactId;
         this.mUserName = userName;
+        this.mPass = pass;
         this.mProfileImage = profileImage;
         this.mMobileNo = mobileNo;
         this.mEmailId = emailId;
@@ -65,6 +67,14 @@ public class Contact implements Serializable{
         return mThumbnail;
     }
 
+
+    public void setmPass(String mPass) {
+        this.mPass = mPass;
+    }
+
+    public String getmPass() {
+        return mPass;
+    }
 
     public void setmWorkPhone(String mWorkPhone) {
         this.mWorkPhone = mWorkPhone;

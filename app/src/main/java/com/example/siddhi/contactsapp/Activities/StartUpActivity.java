@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.siddhi.contactsapp.AsyncTasks.LoginUserAsyncTask;
+import com.example.siddhi.contactsapp.database.ContactTableHelper;
 import com.example.siddhi.contactsapp.database.DatabaseHelper;
+import com.example.siddhi.contactsapp.database.UserTableHelper;
+import com.example.siddhi.contactsapp.helper.Constants;
 import com.example.siddhi.contactsapp.helper.Utility;
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -23,19 +26,25 @@ public class StartUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        DatabaseHelper db = new DatabaseHelper(this);
-        db.createDatabase();
-
-        refreshedToken = FirebaseInstanceId.getInstance().getToken();
-
         sharedpreferences = getSharedPreferences("UserProfile", Context.MODE_PRIVATE);
 
         userUsername = sharedpreferences.getString("UserUsername","");
 
             if (userUsername.equals("")) {
 
+               // getApplicationContext().deleteDatabase(Constants.DATABASE_NAME);
+
+             /*   ContactTableHelper db = new ContactTableHelper(this);
+                db.deleteAllContacts();
+                db.close();
+
+                UserTableHelper db1 = new UserTableHelper(this);
+                db1.deleteAllUsers();
+                db1.close();*/
+
                 Intent i = (new Intent(StartUpActivity.this, LoginActivity.class));
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
 
                 finish();
@@ -44,6 +53,7 @@ public class StartUpActivity extends AppCompatActivity {
 
                 Intent i = (new Intent(StartUpActivity.this,MainActivity.class));
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
 
                 finish();

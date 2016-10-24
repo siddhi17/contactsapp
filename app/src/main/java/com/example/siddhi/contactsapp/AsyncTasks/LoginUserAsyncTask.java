@@ -182,6 +182,13 @@ public class LoginUserAsyncTask extends AsyncTask<String, Void, JSONObject> {
 
                     Toast.makeText(mContext, "user authenticated successfully", Toast.LENGTH_LONG).show();
 
+                    sharedpreferences = mContext.getSharedPreferences("UserProfile",mContext.MODE_PRIVATE);
+
+                    String refreshedToken = sharedpreferences.getString("deviceId","");
+
+                    UpdateTokenAsyncTask updateTokenAsyncTask = new UpdateTokenAsyncTask(mContext,userId,refreshedToken);
+                    updateTokenAsyncTask.execute(userId,refreshedToken);
+
                    /* User user1 = new User(userId);
                     Log.e("user1", "" + user1);*/
                     Intent intent = new Intent(mContext, MainActivity.class);

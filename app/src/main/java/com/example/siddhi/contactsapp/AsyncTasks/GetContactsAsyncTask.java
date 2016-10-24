@@ -49,11 +49,14 @@ public class GetContactsAsyncTask extends AsyncTask<String, Void, JSONObject> {
     protected void onPreExecute() {
         super.onPreExecute();
        // progressDialog=new ProgressDialog(mContext);
-        progressDialog.setMessage("Getting information Please wait...");
+        progressDialog.setMessage("Please wait...");
         progressDialog.setIndeterminate(false);
         progressDialog.setCancelable(false);
         progressDialog.show();
     }
+
+
+
     @Override
     protected JSONObject doInBackground(String...params) {
         try {

@@ -29,6 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CONTACT_TABLE = "contactTable";
     private static final String KEY_CONTACT_NAME = "contactName";
+    private static final String KEY_CONTACT_PASS = "contactPass";
     private static final String KEY_CONTACT_EMAIL_ID = "contactEmailId";
     private static final String KEY_CONTACT_MOBILE_NO = "contactMobileNo";
     private static final String KEY_CONTACT_PROFILE_IMAGE = "contactProfileImage";
@@ -81,6 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String CREATE_CONTACT_TABLE = "CREATE TABLE " + CONTACT_TABLE + "("
                 + KEY_CONTACT_ID + " TEXT,"
                 + KEY_CONTACT_NAME + " TEXT,"
+                + KEY_CONTACT_PASS + " TEXT,"
                 + KEY_CONTACT_MOBILE_NO + " TEXT,"
                 + KEY_CONTACT_EMAIL_ID + " TEXT,"
                 + KEY_CONTACT_PROFILE_IMAGE + " TEXT,"
@@ -118,7 +120,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         context.deleteDatabase(Constants.DATABASE_NAME + ".db");
 
         createTable(db);
-
         // Create tables again
         //onCreate(db);
     }

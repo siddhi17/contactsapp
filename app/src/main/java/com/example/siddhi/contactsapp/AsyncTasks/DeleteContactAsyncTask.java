@@ -2,9 +2,13 @@ package com.example.siddhi.contactsapp.AsyncTasks;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.example.siddhi.contactsapp.Activities.DetailViewActivity;
+import com.example.siddhi.contactsapp.Activities.MainActivity;
+import com.example.siddhi.contactsapp.database.ContactTableHelper;
 import com.example.siddhi.contactsapp.helper.Excpetion2JSON;
 import com.example.siddhi.contactsapp.helper.Map2JSON;
 import com.example.siddhi.contactsapp.helper.ServerRequest;
@@ -16,25 +20,26 @@ import org.json.JSONObject;
 import java.util.Map;
 
 /**
- * Created by Siddhi on 10/11/2016.
+ * Created by Siddhi on 10/20/2016.
  */
-public class SendInviteAsyncTask  extends AsyncTask<Map<String, String>, Void, JSONObject> {
+public class DeleteContactAsyncTask  extends AsyncTask<Map<String, String>, Void, JSONObject> {
 
     String api;
     JSONObject jsonParams;
+    String mUserId,mLinkdContactId;
     private Context mContext;
-    private static String KEY_SUCCESS = "Invitation sent.";
     private ProgressDialog progressDialog;
 
-    public SendInviteAsyncTask(Context context) {
+    public DeleteContactAsyncTask(Context context,String linkedContactId) {
         this.mContext = context;
-        this.progressDialog = new ProgressDialog(context);
+        this.mLinkdContactId = linkedContactId;
+        this.progressDialog = new ProgressDialog(mContext);
     }
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         // progressDialog=new ProgressDialog(mContext);
-        progressDialog.setMessage("Sending invitation...");
+        progressDialog.setMessage("Deleting contact please wait...");
         progressDialog.setIndeterminate(false);
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -44,7 +49,7 @@ public class SendInviteAsyncTask  extends AsyncTask<Map<String, String>, Void, J
         try {
 
             //Url
-            api = ServiceUrl.getBaseUrl() + "sendInvite.php";
+            api = ServiceUrl.getBaseUrl() + "deleteContact.php";
             //build JsonObject
             jsonParams = new JSONObject();
             Map2JSON mjs = new Map2JSON();
@@ -66,20 +71,27 @@ public class SendInviteAsyncTask  extends AsyncTask<Map<String, String>, Void, J
         if (response.has("message")) {
             JSONObject userJson = null;
             String message = null;
-
             try {
 
-                if (response.getString("message").equalsIgnoreCase(KEY_SUCCESS)) {
-                    Toast.makeText(mContext, "Invitation sent.", Toast.LENGTH_LONG).show();
+                if (response.getString("message").equalsIgnoreCase("Contact Deleted Successfully.")) {
+                    Toast.makeText(mContext, "Contact Deleted.", Toast.LENGTH_LONG).show();
+                    ContactTableHelper contactTableHelper = new ContactTableHelper(mContext);
+                    contactTableHelper.deleteContact(mLinkdContactId);
+
+                    contactTableHelper.close();
+
                     progressDialog.dismiss();
+
+                    ((DetailViewActivity)mContext).finish();
+
+                    mContext.startActivity(new Intent(mContext, MainActivity.class));
 
                 } else {
 
-                    Toast.makeText(mContext, "Invitation exists.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Could not delete contact.", Toast.LENGTH_LONG).show();
                     progressDialog.dismiss();
                 }
-            }
-            catch(JSONException e){
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
