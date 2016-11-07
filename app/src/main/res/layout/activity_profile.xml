@@ -101,40 +101,8 @@
             android:inputType="text"
             android:singleLine="true" />
         </LinearLayout>
-    <LinearLayout
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginRight="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_gravity="center_horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Username"
-            android:id="@+id/textView11"
-            android:layout_below="@+id/thumbnail"
-            android:layout_toLeftOf="@+id/thumbnail"
-            android:layout_toStartOf="@+id/thumbnail"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="10dp" />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/edtusername"
-            android:textColor="#141212"
-            android:textColorHint="#a8a8a8"
-            android:textAlignment="textStart"
-            android:layout_gravity="center"
-            android:minHeight="30dp"
-            android:inputType="text"
-          android:editable="false"
-            android:singleLine="true"
-            />
-        </LinearLayout>
-    <LinearLayout
+        <LinearLayout
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -163,12 +131,12 @@
             android:textAlignment="textStart"
             android:layout_weight="0.23"
             android:minEms="10"
-            android:maxLength="10"
             android:textColor="#141212"
             android:textColorHint="#a8a8a8"
             android:singleLine="true"
             android:inputType="phone"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:hint="+91(Enter a country code)" />
 </LinearLayout>
     <LinearLayout
         android:layout_width="260dp"
@@ -203,38 +171,7 @@
             />
 </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginRight="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_gravity="center_horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Password"
-            android:id="@+id/textView14"
-            android:layout_below="@+id/thumbnail"
-            android:layout_toLeftOf="@+id/thumbnail"
-            android:layout_toStartOf="@+id/thumbnail"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="left" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/edtpass"
-            android:textColor="#141212"
-            android:textColorHint="#a8a8a8"
-            android:textAlignment="textStart"
-            android:layout_gravity="center"
-            android:minHeight="30dp"
-            android:singleLine="true"
-            android:inputType="textPassword" />
-</LinearLayout>
-    <LinearLayout
+        <LinearLayout
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -257,7 +194,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtjodtitle"
-            android:hint="@string/Jod_title"
             android:textColor="#141212"
             android:textColorHint="#a8a8a8"
             android:textAlignment="textStart"
@@ -291,7 +227,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edthomeaddress"
-            android:hint="@string/Home_Address"
             android:textColor="#141212"
             android:textColorHint="#a8a8a8"
             android:textAlignment="textStart"
@@ -325,7 +260,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtworkaddress"
-            android:hint="@string/Work_address"
             android:textColor="#141212"
             android:textColorHint="#a8a8a8"
             android:textAlignment="textStart"
@@ -358,16 +292,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtwork_phone"
-            android:hint="@string/Status"
             android:textColor="#141212"
             android:textColorHint="#a8a8a8"
             android:textAlignment="textStart"
             android:layout_gravity="center"
             android:minHeight="30dp"
-            android:inputType="textEmailAddress"
             android:singleLine="true"
 
-            />
+            android:inputType="number"
+            android:hint="022(Enter a area code)"
+            android:layout_marginBottom="20dp" />
 </LinearLayout>
 
     </LinearLayout>

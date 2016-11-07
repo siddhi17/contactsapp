@@ -133,7 +133,7 @@
             android:textColor="#141212"
             android:textColorHint="#534e4e"
             android:minHeight="30dp"
-            android:inputType="none"
+            android:inputType="textPassword"
             android:singleLine="true"
             android:layout_marginLeft="40dp"
             android:background="@android:color/transparent" />

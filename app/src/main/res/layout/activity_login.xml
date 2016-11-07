@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:background="@color/colorPrimary"
-        tools:context="com.example.siddhi.contactsapp.Activities.LoginActivity">
+        tools:context=".Activities.LoginActivity">
 
 
        <RelativeLayout
@@ -44,8 +44,7 @@
                 android:textColorHint="#ffffff"
                 android:hint="@string/Password"
                 android:password="true"
-                android:maxLength="8"
-                android:singleLine="true"
+               android:singleLine="true"
                 android:textColor="#ffffff"
                 android:textColorHighlight="#ffffff"
                android:layout_marginBottom="30dp"

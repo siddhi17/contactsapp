@@ -11,14 +11,14 @@
         android:text="Enter a username"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/editUserName"
-        android:layout_alignStart="@+id/editUserName"
+        android:layout_alignLeft="@+id/editName"
+        android:layout_alignStart="@+id/editName"
         android:layout_marginTop="20dp" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editUserName"
+        android:id="@+id/editName"
         android:hint="username"
         android:layout_alignParentTop="false"
         android:layout_below="@+id/textView"
