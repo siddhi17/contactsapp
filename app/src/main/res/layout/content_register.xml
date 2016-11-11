@@ -22,15 +22,16 @@
             android:id="@+id/linearLayout5"
             android:layout_below="@+id/view2">
 
-            <ImageView
+
+            <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/thumbnail"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:src="@drawable/ic_account_box_black_48dp"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="40dp"
-                android:layout_centerHorizontal="true" />
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_account_circle_black_48dp"
+                android:layout_alignParentTop="false"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40dp" />
 
             <EditText
                 android:layout_width="253dp"
@@ -45,7 +46,8 @@
                 android:singleLine="true"
                 android:layout_below="@+id/textView20"
                 android:layout_alignLeft="@+id/edtmobileno"
-                android:layout_alignStart="@+id/edtmobileno" />
+                android:layout_alignStart="@+id/edtmobileno"
+                android:maxLength="25" />
 
 
             <EditText
@@ -64,7 +66,8 @@
                 android:layout_alignParentEnd="false"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/textView21"
-                android:hint="+91(Enter a country code)" />
+                android:hint="+91(Enter a country code)"
+                android:maxLength="14" />
             <EditText
                 android:layout_width="253dp"
                 android:layout_height="wrap_content"

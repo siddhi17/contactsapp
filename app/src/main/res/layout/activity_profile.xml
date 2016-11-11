@@ -136,7 +136,8 @@
             android:singleLine="true"
             android:inputType="phone"
             android:layout_gravity="center"
-            android:hint="+91(Enter a country code)" />
+            android:hint="+91(Enter a country code)"
+            android:maxLength="14" />
 </LinearLayout>
     <LinearLayout
         android:layout_width="260dp"
@@ -301,7 +302,8 @@
 
             android:inputType="number"
             android:hint="022(Enter a area code)"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="20dp"
+            android:maxLength="14" />
 </LinearLayout>
 
     </LinearLayout>

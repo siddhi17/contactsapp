@@ -117,31 +117,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Password"
-            android:id="@+id/textView9"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="10dp" />
-
-        <EditText
-            android:saveEnabled="false"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/editTextPass"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:clickable="false"
-            android:textColor="#141212"
-            android:textColorHint="#534e4e"
-            android:minHeight="30dp"
-            android:inputType="textPassword"
-            android:singleLine="true"
-            android:layout_marginLeft="40dp"
-            android:background="@android:color/transparent" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Mobile number"
             android:id="@+id/textView4"
             android:layout_marginLeft="40dp"
