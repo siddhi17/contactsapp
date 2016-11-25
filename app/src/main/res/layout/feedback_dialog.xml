@@ -1,34 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ffffff">
 
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:id="@+id/editName"
         android:hint="Name"
+        android:background="@drawable/border_edit_text"
         android:layout_alignParentTop="false"
         android:layout_below="@+id/textView"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:paddingLeft="10dp" />
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:id="@+id/editTextEmailId"
         android:hint="Email Id"
+        android:background="@drawable/border_edit_text"
         android:layout_alignParentTop="false"
         android:layout_below="@+id/textView"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="20dp"
+        android:paddingLeft="10dp" />
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:id="@+id/editTextComment"
         android:hint="Comment"
         android:layout_alignParentTop="false"
         android:layout_below="@+id/textView"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="20dp"
+        android:paddingLeft="10dp"
+        android:background="@drawable/border_edit_text"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:text="Save"
+        android:id="@+id/buttonSave"
+        android:background="@color/colorAccent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="20dp" />
 
 </LinearLayout>
