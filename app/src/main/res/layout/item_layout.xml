@@ -9,15 +9,16 @@
         android:layout_height="60dp"
         android:background="@android:color/white">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/thumbnail"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_account_circle_black_48dp"
+            android:src="@drawable/ic_person_black_48dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="05dp"
-            android:layout_marginBottom="05dp" />
+            android:layout_marginBottom="05dp"
+            android:background="@drawable/border_image" />
 
         <TextView
 

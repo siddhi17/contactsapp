@@ -162,10 +162,13 @@
             android:id="@+id/edtemail"
             android:textColor="#141212"
             android:textColorHint="#a8a8a8"
+            android:clickable="false"
+            android:focusable="false"
+            android:cursorVisible="false"
             android:textAlignment="textStart"
             android:layout_gravity="center"
             android:minHeight="30dp"
-            android:inputType="textEmailAddress"
+            android:inputType="none"
             android:singleLine="true"
 
             />

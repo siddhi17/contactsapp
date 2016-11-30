@@ -12,7 +12,7 @@
     <string name="server_url">http://xesoftwares.com/contactsapi/</string>
     <string name="TakePicture">Take Picture</string>
     <string name="Login">Login</string>
-    <string name="ForgetPassword">Forgot Password</string>
+    <string name="ForgetPassword">Unable to sign in?</string>
     <string name="LoginScreen">LoginScreen</string>
     <string name="name">full name</string>
     <string name="Userid">User Id</string>
