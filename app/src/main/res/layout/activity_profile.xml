@@ -55,7 +55,8 @@
         android:src="@drawable/ic_account_circle_black_48dp"
         android:layout_alignParentTop="false"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp" />
+        android:layout_marginTop="40dp"
+        android:foregroundGravity="center" />
 
     <LinearLayout
         android:orientation="vertical"

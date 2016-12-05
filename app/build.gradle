@@ -8,9 +8,9 @@ android {
         applicationId "com.weberz"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 3
+        versionCode 5
         multiDexEnabled true
-        versionName "1.2"
+        versionName "1.4"
     }
     buildTypes {
         release {
