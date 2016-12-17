@@ -22,8 +22,8 @@
             android:id="@+id/thumbnail"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:src="@drawable/ea010540d5a3c9ef387047a038c8d08e"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:background="@drawable/border_image" />
         </LinearLayout>
         <TextView
 

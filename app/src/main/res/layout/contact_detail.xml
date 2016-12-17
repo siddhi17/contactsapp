@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_below="@+id/view3">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/view3"
+            android:background="#ffffff">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout"
+                android:background="@color/material_blue_grey_900">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/profile_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#FFFFFF"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/ea010540d5a3c9ef387047a038c8d08e"
+                    android:layout_marginBottom="30dp"
+                    android:layout_gravity="center"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/linearLayout6"
+                android:gravity="left"
+                android:background="@android:color/white"
+                android:layout_below="@+id/linearLayout">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Full name"
+                    android:id="@+id/textView2"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="30dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtname"
+                    android:textColor="#141212"
+                    android:saveEnabled="false"
+                    android:textColorHint="#534e4e"
+                    android:minHeight="30dp"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:singleLine="false"
+                    android:clickable="false"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="40dp"
+                    android:contextClickable="false"
+                    android:autoText="false"
+                    android:background="@android:color/transparent"
+                    android:layout_marginRight="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Username"
+                    android:id="@+id/textView8"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp" />
+
+                <EditText
+                    android:saveEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtusername"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:textColor="#141212"
+                    android:minHeight="30dp"
+                    android:inputType="none"
+                    android:singleLine="false"
+                    android:layout_marginLeft="40dp"
+                    android:layout_gravity="left"
+                    android:background="@android:color/transparent"
+                    android:layout_marginRight="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Mobile number"
+                    android:id="@+id/textView4"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp" />
+
+                <EditText
+                    android:saveEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:id="@+id/edtmobileno"
+                    android:textColorHint="#575353"
+                    android:maxLength="10"
+                    android:singleLine="false"
+                    android:inputType="none"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="40dp"
+                    android:background="@android:color/transparent"
+                    android:minHeight="30dp"
+                    android:layout_marginRight="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Email id"
+                    android:id="@+id/textView5"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp" />
+
+                <EditText
+                    android:saveEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:id="@+id/edtemail"
+                    android:textColor="#141212"
+                    android:textColorHint="#534e4e"
+                    android:minHeight="30dp"
+                    android:inputType="none"
+                    android:singleLine="false"
+                    android:layout_marginLeft="40dp"
+                    android:layout_gravity="left"
+                    android:background="@android:color/transparent"
+                    android:layout_marginRight="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Company"
+                    android:id="@+id/textView10"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp" />
+                <EditText
+                    android:saveEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtcompany"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:textColor="#141212"
+                    android:textColorHint="#534e4e"
+                    android:minHeight="30dp"
+                    android:inputType="none"
+                    android:singleLine="false"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="40dp"
+                    android:background="@android:color/transparent"
+                    android:layout_marginRight="20dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Job title"
+                    android:id="@+id/textView"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp" />
+                <EditText
+                    android:saveEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtjodtitle"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:textColor="#141212"
+                    android:textColorHint="#534e4e"
+                    android:minHeight="30dp"
+                    android:inputType="none"
+                    android:singleLine="false"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="40dp"
+                    android:background="@android:color/transparent"
+                    android:layout_marginRight="20dp" />
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Home address"
+                    android:id="@+id/textView3"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp"
+                    android:minHeight="30dp" />
+                <EditText
+                    android:saveEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edthomeaddress"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:textColor="#141212"
+                    android:textColorHint="#534e4e"
+                    android:minHeight="30dp"
+                    android:inputType="none"
+                    android:singleLine="false"
+                    android:layout_marginLeft="40dp"
+                    android:background="@android:color/transparent"
+                    android:layout_marginRight="20dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Work address"
+                    android:id="@+id/textView7"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp" />
+                <EditText
+                    android:saveEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtworkaddress"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:textColor="#141212"
+                    android:textColorHint="#534e4e"
+                    android:minHeight="30dp"
+                    android:inputType="none"
+                    android:singleLine="false"
+                    android:layout_marginLeft="40dp"
+                    android:background="@android:color/transparent"
+                    android:layout_marginRight="20dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Work phone"
+                    android:id="@+id/textView6"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp" />
+
+                <EditText
+                    android:saveEnabled="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:id="@+id/edttelephoneno"
+                    android:textColorHint="#575353"
+                    android:maxLength="10"
+                    android:singleLine="false"
+                    android:inputType="none"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="40dp"
+                    android:background="@android:color/transparent"
+                    android:minHeight="30dp"
+                    android:layout_marginRight="20dp"
+                    android:textColor="#141212"
+                    android:layout_marginBottom="20dp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
